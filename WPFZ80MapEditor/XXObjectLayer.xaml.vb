@@ -73,6 +73,22 @@ Public Class XXObjectLayer
         SelectionRect.Width = 0
         SelectionRect.Height = 0
 
+        Dim SelRect As New Rect
+        Dim CurPoint = Mouse.GetPosition(ObjectCanvas)
+        CurPoint.X = Math.Max(0, Math.Min(256, CurPoint.X))
+        CurPoint.Y = Math.Max(0, Math.Min(256, CurPoint.Y))
+        SelRect.X = Math.Max(0, Math.Min(256, CurPoint.X))
+        SelRect.Y = Math.Max(0, Math.Min(256, CurPoint.Y))
+        SelRect.Width = 1
+        SelRect.Height = 1
+
+        For Each ZObj As IBaseGeneralObject In ObjectListBox.ItemsSource
+            Dim IntersectResult As Rect = Rect.Intersect(ZObj.Bounds, SelRect)
+            If Not IntersectResult.IsEmpty() Then
+                Exit Sub
+            End If
+        Next
+
         _StartDrag = Mouse.GetPosition(ObjectCanvas)
 
         If sender.CaptureMouse() Then
@@ -166,11 +182,16 @@ Public Class XXObjectLayer
             _StartClickTime = Environment.TickCount
         End If
 
+        If Not _FirstClick And ((Environment.TickCount - _StartClickTime) < 500) Then
+            ApplicationCommands.Properties.Execute(Nothing, Me)
+            Exit Sub
+        End If
+
         _StartObjectDrag = Mouse.GetPosition(ObjectCanvas)
         If sender.CaptureMouse() Then
+            e.Handled = True
             UndoManager.PushUndoState(Map, UndoManager.TypeFlagFromType(ObjectType))
 
-            e.Handled = True
             RaiseCoordinatesUpdated()
             ObjectListBox.Focus()
         End If
@@ -182,6 +203,7 @@ Public Class XXObjectLayer
     End Sub
 
     Public Sub ItemContainer_MouseMove(sender As System.Object, e As System.Windows.Input.MouseEventArgs)
+
         Dim Pos = Mouse.GetPosition(ObjectCanvas)
         If Not _IsDraggingObject And e.LeftButton = MouseButtonState.Pressed Then
             If Math.Abs(Pos.X - _StartObjectDrag.X) > SystemParameters.MinimumHorizontalDragDistance OrElse
@@ -203,11 +225,13 @@ Public Class XXObjectLayer
             Dim Diff = CurPoint - _StartObjectDrag
 
             For Each ZObj As IBaseGeneralObject In ObjectListBox.SelectedItems
-                Dim StartX = SPASMHelper.Eval(ZObj.PreviousVersion.Args(0).Value)
-                Dim StartY = SPASMHelper.Eval(ZObj.PreviousVersion.Args(1).Value)
+                If ZObj.PreviousVersion IsNot Nothing Then
+                    Dim StartX = SPASMHelper.Eval(ZObj.PreviousVersion.Args(0).Value)
+                    Dim StartY = SPASMHelper.Eval(ZObj.PreviousVersion.Args(1).Value)
 
-                ZObj.Args(0).Value = CInt(Math.Round(StartX + Diff.X))
-                ZObj.Args(1).Value = CInt(Math.Round(StartY + Diff.Y))
+                    ZObj.Args(0).Value = CInt(Math.Round(StartX + Diff.X))
+                    ZObj.Args(1).Value = CInt(Math.Round(StartY + Diff.Y))
+                End If
             Next
 
             RaiseCoordinatesUpdated()
@@ -358,5 +382,9 @@ Public Class XXObjectLayer
 
     Public Overrides Sub DeselectAll()
         ObjectListBox.SelectedItem = Nothing
+    End Sub
+
+    Private Sub UserControl_MouseDoubleClick(sender As Object, e As MouseButtonEventArgs)
+        ApplicationCommands.Properties.Execute(Nothing, Me)
     End Sub
 End Class

@@ -126,7 +126,8 @@
                 </Setter.Value>
             </Setter>
             <Setter Property="Template" Value="{StaticResource ObjectListBoxItemTemplate}"/>
-            
+
+            <EventSetter Event="MouseDoubleClick" Handler="UserControl_MouseDoubleClick"></EventSetter>
             <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ItemContainer_MouseLeftButtonDown"/>
             <EventSetter Event="MouseMove" Handler="ItemContainer_MouseMove"/>
             <EventSetter Event="MouseLeftButtonUp" Handler="ItemContainer_MouseLeftButtonUp"/>
@@ -158,8 +159,8 @@
             <!--<EventSetter Event="KeyDown" Handler="ObjectListBox_KeyDown"/>-->
         </Style>
         
-        <DataTemplate x:Key="ObjectTemplate">            
-            <UserControl Tag="{Binding ., ElementName=ObjectLayer}">
+        <DataTemplate x:Key="ObjectTemplate">
+                <UserControl Tag="{Binding ., ElementName=ObjectLayer}">
                     <UserControl.ContextMenu>
                         <ContextMenu DataContext="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
                             <MenuItem Header="Select" ItemsSource="{Binding ObjectsUnderClick}">
@@ -175,9 +176,7 @@
                             <MenuItem Command="Delete"/>
                         </ContextMenu>
                     </UserControl.ContextMenu>
-                    <UserControl.InputBindings>
-                        <MouseBinding Command="Properties" Gesture="LeftDoubleClick" />
-                    </UserControl.InputBindings>
+
                     <Image Effect="{Binding ObjectEffect, ElementName=ObjectLayer}">
                     <Image.Source>
                         <MultiBinding Converter="{StaticResource ImageConverter}">
@@ -201,7 +200,8 @@
     </local:MapLayer.LayerType>
     
     <Canvas x:Name="ObjectCanvas" Background="Transparent">
-        <ListBox x:Name="ObjectListBox" ItemsSource="{Binding ObjectCollection, ElementName=ObjectLayer}" Style="{StaticResource ObjectListBoxStyle}" ItemTemplate="{StaticResource ObjectTemplate}"></ListBox>
+        <ListBox x:Name="ObjectListBox" ItemsSource="{Binding ObjectCollection, ElementName=ObjectLayer}" Style="{StaticResource ObjectListBoxStyle}" ItemTemplate="{StaticResource ObjectTemplate}" SelectionMode="Extended">
+        </ListBox>
         <Border Name="SelectionRect" BorderBrush="{StaticResource SelectionBrush}" BorderThickness="1" Height="150" Width="150" Canvas.Left="10" Canvas.Top="50" Visibility="Hidden">
             <Border.Background>
                 <SolidColorBrush Color="{Binding Color, Source={StaticResource SelectionBrush}}" Opacity="0.4"/>
