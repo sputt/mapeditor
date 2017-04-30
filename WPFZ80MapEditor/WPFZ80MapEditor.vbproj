@@ -169,10 +169,17 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppModel.vb" />
     <Compile Include="DragAdorner.vb" />
+    <Compile Include="Editor\EditorWindow.xaml.vb">
+      <DependentUpon>EditorWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Editor\ScriptEditor.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Effects\InvertEffect.vb" />
     <Compile Include="Panels\TintEffect.vb" />
     <Compile Include="MainWindow.xaml.vb">
@@ -246,6 +253,10 @@
     <Page Include="ColorsAndStoryboards.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Editor\EditorWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -340,6 +351,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <EmbeddedResource Include="Editor\ScriptEditor.resx">
+      <DependentUpon>ScriptEditor.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
@@ -347,6 +361,10 @@
     </EmbeddedResource>
     <Resource Include="Effects\Tint.ps" />
     <Resource Include="Effects\Invert.ps" />
+    <None Include="Editor\ZScript.xshd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </None>
     <None Include="My Project\app.manifest" />
     <None Include="My Project\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -395,9 +413,17 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Effects\Invert.fx" />
+    <Resource Include="Toolbar\redo.png" />
+    <Resource Include="Toolbar\undo.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Scenario\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Branches\Wabbitcode\ICSharpCode.TextEditor\Project\Revsoft.TextEditor.csproj">
+      <Project>{2d18be89-d210-49eb-a9dd-2246fbb3df6d}</Project>
+      <Name>Revsoft.TextEditor</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>

@@ -9,7 +9,7 @@
     xmlns:local="clr-namespace:WPFZ80MapEditor"
     xmlns:converters="clr-namespace:WPFZ80MapEditor.ValueConverters"
     mc:Ignorable="d" 
-    d:DesignHeight="232" d:DesignWidth="166" xmlns:my="clr-namespace:WPFZ80MapEditor">
+    d:DesignHeight="232" d:DesignWidth="200" xmlns:my="clr-namespace:WPFZ80MapEditor">
 
     <UserControl.Resources>
         <converters:XImageConverter x:Key="ImageConverter"/>
@@ -113,6 +113,27 @@
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Center" SnapsToDevicePixels="True" MouseMove="Object_MouseMove">
                                         <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Name="TextBlock1"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="Scripts">
+                <ScrollViewer Margin="0,0,0,0" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Orientation="Vertical">
+                        <ItemsControl Grid.Row="0" ItemsSource="{Binding Path=Scenario.ScriptDefs.Keys}" IsTabStop="False" Padding="0,0,0,0" 
+                          Background="#FFF9F9F9">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Vertical" Margin="0"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Center" SnapsToDevicePixels="True" MouseLeftButtonDown="Script_MouseLeftButtonDown">
+                                        <TextBlock Text="{Binding Path=.}" VerticalAlignment="Center" Name="TextBlock1"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>

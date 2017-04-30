@@ -106,4 +106,11 @@
 
         e.Handled = True
     End Sub
+
+    Private Sub Script_MouseLeftButtonDown(sender As Object, e As MouseButtonEventArgs)
+        Dim FileName As String = CType(sender, StackPanel).DataContext
+        Dim FilePath = DataContext.Scenario.ScriptDefs(FileName)
+        Dim ScriptWindow = New EditorWindow(FilePath)
+        ScriptWindow.Show()
+    End Sub
 End Class

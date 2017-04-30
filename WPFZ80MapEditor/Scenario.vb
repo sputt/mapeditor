@@ -76,6 +76,7 @@ Public Class Scenario
     Public Property ObjectDefs As New Dictionary(Of String, ZDef)
     Public Property EnemyDefs As New Dictionary(Of String, ZDef)
     Public Property MiscDefs As New Dictionary(Of String, ZDef)
+    Public Property ScriptDefs As New Dictionary(Of String, String)
     Public Property Tilesets As New List(Of Tileset)
 
     Private _FileName As String
@@ -228,6 +229,15 @@ Public Class Scenario
                         LoadProps(Misc, MiscPropName, MiscPropValue)
                         MapData.ZMisc.Add(Misc)
                     Next
+
+                    Log("Loading Scripts")
+                    Dim ScriptsFolder = Path.Combine(MapEditorControl.ZeldaFolder, "scripts")
+                    For Each File In Directory.EnumerateFiles(ScriptsFolder)
+                        If Path.GetExtension(File) = ".zcr" Then
+                            ScriptDefs(Path.GetFileNameWithoutExtension(File)) = File
+                        End If
+                    Next
+
                     Log("Done")
                 End If
 
