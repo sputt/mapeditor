@@ -58,7 +58,9 @@ Public Class MapView
             Dim TileIndex = Map.TileData(i) Mod 128
 
             Dim Bounds As New Rect(16 * (i Mod 16), 16 * (Math.Floor(i / 16)), 16, 16)
-            DrawingContext.DrawImage(Map.Tileset.Tiles(TileIndex).Image, Bounds)
+            If Map.Tileset.Tiles.Count > TileIndex Then
+                DrawingContext.DrawImage(Map.Tileset.Tiles(TileIndex).Image, Bounds)
+            End If
         Next
         If ShowCollisions Then
             DrawingContext.PushOpacity(0.25)

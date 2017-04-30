@@ -19,7 +19,7 @@
         Else
             Debug.WriteLine("Drag count: " & DragCount)
             DragCount = DragCount + 1
-            If DragCount = SystemParameters.MinimumHorizontalDragDistance Then
+            If DragCount >= SystemParameters.MinimumHorizontalDragDistance And Not IsDragging Then
                 Dim Obj As ZDef = CType(sender, StackPanel).DataContext
                 Debug.WriteLine("Dragging object!")
 
@@ -78,7 +78,9 @@
         DragDrop.DoDragDrop(sender, Def, DragDropEffects.Move)
 
         DragScope.AllowDrop = previousDrop
-        AdornerLayer.GetAdornerLayer(DragScope).Remove(_adorner)
+        If _adorner IsNot Nothing Then
+            AdornerLayer.GetAdornerLayer(DragScope).Remove(_adorner)
+        End If
         _adorner = Nothing
 
         RemoveHandler DragScope.PreviewDragOver, draghandler

@@ -48,7 +48,7 @@ Public Class SPASMHelper
         Assembler.IncludeDirectories.Add(Path & "\Defaults")
         Assembler.IncludeDirectories.Add(Path & "\Maps")
         Assembler.Assemble("#include ""objectdef.inc""")
-        Dim StdOutput = Assembler.StdOut.ReadAll()
+        'Dim StdOutput = Assembler.StdOut.ReadAll()
 
     End Sub
 
@@ -75,7 +75,7 @@ Public Class SPASMHelper
     Public Shared Function Assemble(ByVal Code As String) As Byte()
         SyncLock Assembler
             Dim Output = Assembler.Assemble(Code)
-            Dim StdOutput = Assembler.StdOut.ReadAll()
+            'Dim StdOutput = Assembler.StdOut.ReadAll()
             '            Debug.Write(StdOutput)
 
             Dim Data As New List(Of Byte)

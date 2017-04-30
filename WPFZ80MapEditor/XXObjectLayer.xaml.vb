@@ -215,6 +215,33 @@ Public Class XXObjectLayer
         End If
     End Sub
 
+    Protected Sub Object_Drop(sender As Object, e As DragEventArgs)
+        Dim Pos = e.GetPosition(ObjectListBox)
+        Dim Def As ZDef = e.Data.GetData(GetType(ZDef))
+
+        Dim Args As New List(Of Object)
+
+        Dim ImageW = Map.Scenario.Images(Def.DefaultImage).Image.Width
+        Dim ImageH = Map.Scenario.Images(Def.DefaultImage).Image.Height
+
+        Args.Add(CInt(Math.Round(Pos.X - (Def.DefaultW / 2))))
+        Args.Add(CInt(Math.Round(Pos.Y + (ImageH / 2) - (Def.DefaultH) + Def.DefaultZ)))
+
+        Dim Obj = ObjectType.BaseType.GetMethod("FromDef").Invoke(Nothing, {Def, Args})
+
+        ObjectCollection.Add(Obj)
+
+        ObjectListBox.SelectedItem = Obj
+        ObjectListBox.Focus()
+
+        'Dim Obj As BaseType = FinishDrop(Def, Args)
+        'If Obj IsNot Nothing Then
+        '    ObjectCollection.Add(Obj)
+        '    ObjectListBox.SelectedItem = Obj
+        '    ObjectListBox.Focus()
+        'End If
+
+    End Sub
 
     Public Sub ItemContainer_MouseLeftButtonUp(sender As System.Object, e As System.Windows.Input.MouseButtonEventArgs)
         If Mouse.Captured Is sender Then
@@ -283,6 +310,21 @@ Public Class XXObjectLayer
 
         ' Work was done for this command. Mark the event as handled.
         e.Handled = True
+    End Sub
+
+    Private Sub OnCanExecuteDelete(ByVal sender As Object, ByVal e As CanExecuteRoutedEventArgs)
+        If ObjectListBox.SelectedItems.Count > 0 Then
+            ' The condition for the command was met.
+            e.CanExecute = True
+            e.Handled = True
+        End If
+    End Sub
+
+    Private Sub OnExecuteDelete(ByVal sender As Object, ByVal e As ExecutedRoutedEventArgs)
+        Dim ObjsToRemove = New List(Of IBaseGeneralObject)(ObjectListBox.SelectedItems.Cast(Of IBaseGeneralObject))
+        For Each Obj In ObjsToRemove
+            ObjectCollection.Remove(Obj)
+        Next
     End Sub
 
     Private Sub ObjectCanvas_PreviewMouseDown(sender As Object, e As MouseButtonEventArgs) Handles ObjectListBox.PreviewMouseDown

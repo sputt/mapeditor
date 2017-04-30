@@ -11,7 +11,7 @@
              xmlns:int="clr-namespace:System.Windows.Interactivity" 
              xmlns:si="clr-namespace:StylesInteractivity"
              x:Name="ObjectLayer"
-             mc:Ignorable="d" Width="256" Height="256">
+             mc:Ignorable="d" Width="256" Height="256" Drop="Object_Drop">
     <UserControl.Resources>
         <ResourceDictionary>
         <ResourceDictionary.MergedDictionaries>
@@ -23,18 +23,6 @@
         <converters:YConverter x:Key="YConverter"/>
         <converters:ZConverter x:Key="ZConverter"/>
         <converters:XImageConverter x:Key="ImageConverter"/>
-        
-        <ContextMenu x:Key="ObjectContextMenu">
-            <MenuItem Header="Select" ItemsSource="{Binding Path=ObjectsUnderClick, RelativeSource={RelativeSource AncestorType=local:XXObjectLayer}}">
-                <MenuItem.ItemContainerStyle>
-                    <Style TargetType="MenuItem">
-                        <Setter Property="Header" Value="{Binding Name}"/>
-                    </Style>
-                </MenuItem.ItemContainerStyle>
-            </MenuItem>
-            <MenuItem Header="_Properties" Command="Properties"/>
-            <MenuItem Header="_Delete"/>
-        </ContextMenu>
 
         <ControlTemplate x:Key="ObjectListBoxItemTemplate"  TargetType="ListBoxItem">
             <Border x:Name="SelectionBorder" Margin="-2" BorderThickness="2" BorderBrush="Transparent">
@@ -172,27 +160,25 @@
         
         <DataTemplate x:Key="ObjectTemplate">            
             <UserControl Tag="{Binding ., ElementName=ObjectLayer}">
-                <UserControl.ContextMenu>
-                    <ContextMenu DataContext="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
-                        <MenuItem Header="Select" ItemsSource="{Binding ObjectsUnderClick}">
-                            <MenuItem.ItemContainerStyle>
-                                <Style TargetType="MenuItem">
-                                    <Setter Property="Header" Value="{Binding Path=Definition.Name}"/>
-                                    <Setter Property="Tag" Value="{Binding .}"/>
-                                    <EventSetter Event="Click" Handler="SelectMenuItem_Click"/>
-                                </Style>
-                            </MenuItem.ItemContainerStyle>
-                        </MenuItem>
-                        <MenuItem Command="Properties"/>
-                        <MenuItem Header="Delete"/>
-                    </ContextMenu> 
-                </UserControl.ContextMenu>
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="MouseDoubleClick">
-                        <i:InvokeCommandAction Command="Properties"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-                <Image Effect="{Binding ObjectEffect, ElementName=ObjectLayer}">
+                    <UserControl.ContextMenu>
+                        <ContextMenu DataContext="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
+                            <MenuItem Header="Select" ItemsSource="{Binding ObjectsUnderClick}">
+                                <MenuItem.ItemContainerStyle>
+                                    <Style TargetType="MenuItem">
+                                        <Setter Property="Header" Value="{Binding Path=Definition.Name}"/>
+                                        <Setter Property="Tag" Value="{Binding .}"/>
+                                        <EventSetter Event="Click" Handler="SelectMenuItem_Click"/>
+                                    </Style>
+                                </MenuItem.ItemContainerStyle>
+                            </MenuItem>
+                            <MenuItem Command="Properties"/>
+                            <MenuItem Command="Delete"/>
+                        </ContextMenu>
+                    </UserControl.ContextMenu>
+                    <UserControl.InputBindings>
+                        <MouseBinding Command="Properties" Gesture="LeftDoubleClick" />
+                    </UserControl.InputBindings>
+                    <Image Effect="{Binding ObjectEffect, ElementName=ObjectLayer}">
                     <Image.Source>
                         <MultiBinding Converter="{StaticResource ImageConverter}">
                             <Binding Path="DataContext.Scenario" ElementName="ObjectLayer"/>
@@ -207,6 +193,7 @@
     
     <UserControl.CommandBindings>
         <CommandBinding Command="Properties" CanExecute="OnCanExecuteProperties" Executed="OnExecuteProperties"/>
+        <CommandBinding Command="Delete" CanExecute="OnCanExecuteDelete" Executed="OnExecuteDelete"/>
     </UserControl.CommandBindings>
     
     <local:MapLayer.LayerType>

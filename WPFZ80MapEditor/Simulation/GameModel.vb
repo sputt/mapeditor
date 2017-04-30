@@ -272,11 +272,12 @@ Public Class GameModel
         _Asm.Defines.Add("_MAPEDITOR_STARTY", StartY)
 
         Dim Output = _Asm.Assemble()
-        Debug.Write(_Asm.StdOut.ReadAll())
+        'Debug.Write(_Asm.StdOut.ReadAll())
 
         _Calc.LoadFile(MapEditorControl.RomPath)
         _Calc.LoadFile(_Asm.OutputFile)
 
+        _Calc.Visible = True
         _Calc.Run()
         _Calc.Reset()
 

@@ -330,7 +330,7 @@ Public Class Scenario
                 Stream.Write(String.Format("${0:X2}", Data(Index)))
                 Index += 1
                 If Index = Data.Count Then
-                    If i <> 16 Then Stream.Write(vbCrLf)
+                    Stream.Write(vbCrLf)
                     Exit Sub
                 End If
                 If i <> 16 Then Stream.Write(",")
