@@ -19,14 +19,16 @@ Public Class Scenario
             "(^\s*|(?<ExtraDefines>(^[a-z0-9_]+\s*=\s*[a-z0-9_]+\s*)+))$",
             RegexOptions.Multiline Or RegexOptions.CultureInvariant Or RegexOptions.Compiled)
 
-    Private Shared ReadOnly MapDataRegex As New Regex("^ANIMATE_SECTION\(\)" & vbLf & _
-        "(^\s+(?<AnimName>[A-Z_]+)\((?<AnimArgs>.*)\)\s*)*\s*" & _
-        "^OBJECT_SECTION\(\)" & vbLf & _
-        "(((^#DEFINE\s+(?<ObjectPropName>\w+)\s+(?<ObjectPropValue>\w+)\s*)|((?!#DEFINE)(?<ObjectPropName>)(?<ObjectPropValue>)))*^\s+(?<ObjectName>[A-Z_]+)\((?<ObjectArgs>.*)\)\s*)*\s*" & _
-        "^ENEMY_SECTION\(\)" & vbLf & _
-        "(((^#DEFINE\s+(?<EnemyPropName>\w+)\s+(?<EnemyPropValue>\w+)\s*)|((?<EnemyPropName>)(?<EnemyPropValue>)))*^\s+(?<EnemyName>[A-Z_]+)\((?<EnemyArgs>.*)\)\s*)*\s*" & _
-        "^MISC_SECTION\(\)" & vbLf & _
-        "(((^#DEFINE\s+(?<MiscPropName>\w+)\s+(?<MiscPropValue>\w+)\s*)|((?<MiscPropName>)(?<MiscPropValue>)))*^\s+(?<MiscName>[A-Z_]+)\((?<MiscArgs>.*)\)\s*)*\s*" & _
+    Private Shared ReadOnly MapDataRegex As New Regex("^ANIMATE_SECTION\(\)" & vbLf &
+        "(^\s+(?<AnimName>[A-Z_]+)\((?<AnimArgs>.*)\)\s*)*\s*" &
+        "^OBJECT_SECTION\(\)" & vbLf &
+        "(((^#DEFINE\s+(?<ObjectPropName>\w+)\s+(?<ObjectPropValue>\w+)\s*)|((?!#DEFINE)(?<ObjectPropName>)(?<ObjectPropValue>)))*^\s+(?<ObjectName>[A-Z_]+)\((?<ObjectArgs>.*)\)\s*)*\s*" &
+        "^ENEMY_SECTION\(\)" & vbLf &
+        "(((^#DEFINE\s+(?<EnemyPropName>\w+)\s+(?<EnemyPropValue>\w+)\s*)|((?<EnemyPropName>)(?<EnemyPropValue>)))*^\s+(?<EnemyName>[A-Z_]+)\((?<EnemyArgs>.*)\)\s*)*\s*" &
+        "^MISC_SECTION\(\)" & vbLf &
+        "(((^#DEFINE\s+(?<MiscPropName>\w+)\s+(?<MiscPropValue>\w+)\s*)|((?<MiscPropName>)(?<MiscPropValue>)))*^\s+(?<MiscName>[A-Z_]+)\((?<MiscArgs>.*)\)\s*)*\s*" &
+        "(^SCRIPT_SECTION\(\)" & vbLf &
+        "(((^#DEFINE\s+(?<ScriptPropName>\w+)\s+(?<ScriptPropValue>\w+)\s*)|((?<ScriptPropName>)(?<ScriptPropValue>)))*^\s+(?<ScriptName>[A-Z_]+)\((?<ScriptArgs>.*)\)\s*)*\s*)?" &
         "^END_SECTION\(\)",
         RegexOptions.Multiline Or RegexOptions.CultureInvariant Or RegexOptions.Compiled)
 
@@ -76,7 +78,9 @@ Public Class Scenario
     Public Property ObjectDefs As New Dictionary(Of String, ZDef)
     Public Property EnemyDefs As New Dictionary(Of String, ZDef)
     Public Property MiscDefs As New Dictionary(Of String, ZDef)
-    Public Property ScriptDefs As New Dictionary(Of String, String)
+    Public Property ScriptDef As ZScript
+    Public Property BuiltinScripts As New Dictionary(Of String, String)
+    Public Property AllScripts As New Dictionary(Of String, String)
     Public Property Tilesets As New List(Of Tileset)
 
     Private _FileName As String
@@ -128,10 +132,16 @@ Public Class Scenario
         Log("Loading all defs")
 
         Dim Test As New DefParams()
+
+        Dim TempScriptDefs As New Dictionary(Of String, ZDef)
+
         Dim DefList = {New DefParams("animatedef.inc", AnimDefs, GetType(ZAnim)),
-        New DefParams("objectdef.inc", ObjectDefs, GetType(ZObject)),
-        New DefParams("miscdef.inc", MiscDefs, GetType(ZMisc)),
-        New DefParams("enemydef.inc", EnemyDefs, GetType(ZEnemy))}
+                    New DefParams("objectdef.inc", ObjectDefs, GetType(ZObject)),
+                    New DefParams("miscdef.inc", MiscDefs, GetType(ZMisc)),
+                    New DefParams("enemydef.inc", EnemyDefs, GetType(ZEnemy)),
+                    New DefParams("scriptdef.inc", TempScriptDefs, GetType(ZScript))}
+
+        'ScriptDef = DirectCast(TempScriptDefs("Script"), ZScript)
 
         Parallel.ForEach(DefList, Sub(Item)
                                       LoadDefs(MapEditorControl.ZeldaFolder & "\" & Item.FileName, Item.Collection, Item.Type)
@@ -177,17 +187,13 @@ Public Class Scenario
                 If Matches.Count = 1 Then
                     Dim Groups = Matches(0).Groups
 
-                    Log("Loading animated tiles...")
-
                     RawData.ReadByte() : RawData.ReadByte()
                     For i = 0 To Groups("AnimName").Captures.Count - 1
                         Dim Params = Split(Groups("AnimArgs").Captures(i).Value, ",")
                         Dim Anim As New ZAnim(AnimDefs(Groups("AnimName").Captures(i).Value), Params(0), Params(1), RawData)
                         MapData.ZAnims.Add(Anim)
                     Next
-                    Log("Done")
 
-                    Log("Loading the rest...")
                     Dim offset = 0
                     RawData.ReadByte() : RawData.ReadByte()
                     For i = 0 To Groups("ObjectName").Captures.Count - 1
@@ -230,14 +236,19 @@ Public Class Scenario
                         MapData.ZMisc.Add(Misc)
                     Next
 
-                    Log("Loading Scripts")
-                    Dim ScriptsFolder = Path.Combine(MapEditorControl.ZeldaFolder, "scripts")
-                    For Each File In Directory.EnumerateFiles(ScriptsFolder)
-                        If Path.GetExtension(File) = ".zcr" Then
-                            ScriptDefs(Path.GetFileNameWithoutExtension(File)) = File
+                    offset = 0
+                    RawData.ReadByte() : RawData.ReadByte()
+                    For i = 0 To Groups("ScriptName").Captures.Count - 1
+                        Dim ScriptPropName = Groups("ScriptPropName").Captures(i + offset).Value
+                        Dim ScriptPropValue = Groups("ScriptPropValue").Captures(i + offset).Value
+                        If Not String.IsNullOrEmpty(ScriptPropName) Then
+                            offset += 1
                         End If
+                        Dim Params = Split(Groups("ScriptArgs").Captures(i).Value, ",")
+                        Dim Scr As New ZScript(TempScriptDefs(Groups("ScriptName").Captures(i).Value), RawData, Params)
+                        LoadProps(Scr, ScriptPropName, ScriptPropValue)
+                        MapData.ZScript.Add(Scr)
                     Next
-
                     Log("Done")
                 End If
 
@@ -250,6 +261,14 @@ Public Class Scenario
                 CurShiftY += MapData.Y - OldY
                 Log("Done")
                 ScenarioName = Left(Label, Len(Label) - 7)
+            End If
+        Next
+
+        Log("Loading Scripts")
+        Dim ScriptsFolder = Path.Combine(MapEditorControl.ZeldaFolder, "scripts")
+        For Each File In Directory.EnumerateFiles(ScriptsFolder)
+            If Path.GetExtension(File) = ".zcr" Then
+                BuiltinScripts(Path.GetFileNameWithoutExtension(File).Replace("-", "_").Replace(" ", "_")) = File
             End If
         Next
 
@@ -455,6 +474,12 @@ Public Class Scenario
 
             For i = 0 To MapData.ZMisc.Count - 1
                 MapData.ZMisc(i).Write(Stream, i)
+            Next
+
+            Stream.WriteLine("script_section()")
+
+            For i = 0 To MapData.ZScript.Count - 1
+                MapData.ZScript(i).Write(Stream, i)
             Next
 
             TilesetTable.Add(MapPrefix & "_TILESET")

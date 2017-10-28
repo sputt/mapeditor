@@ -1,6 +1,4 @@
-﻿Imports System.Text
-Imports Microsoft.VisualStudio.TestTools.UnitTesting
-Imports WPFZ80MapEditor
+﻿Imports WPFZ80MapEditor
 Imports System.Windows
 
 <TestClass()> Public Class TilegroupSelectionTest

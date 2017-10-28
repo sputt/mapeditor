@@ -182,7 +182,7 @@ Public Class XXObjectLayer
             _StartClickTime = Environment.TickCount
         End If
 
-        If Not _FirstClick And ((Environment.TickCount - _StartClickTime) < 500) Then
+        If Not _FirstClick And ((Environment.TickCount - _StartClickTime) < 400) Then
             ApplicationCommands.Properties.Execute(Nothing, Me)
             Exit Sub
         End If
@@ -303,11 +303,11 @@ Public Class XXObjectLayer
 
         Dim ListBoxItem As ListBoxItem = ObjectListBox.ItemContainerGenerator.ContainerFromItem(ObjectListBox.SelectedItem)
         Dim ObjOld As IBaseGeneralObject = ObjectListBox.SelectedItem
-        Dim AbsolutePoint = Me.PointToScreen(New Point(Canvas.GetLeft(ListBoxItem) + ListBoxItem.ActualWidth + 2, Canvas.GetTop(ListBoxItem) - 30))
+        Dim AbsolutePoint = New Point(Canvas.GetLeft(ListBoxItem) + ListBoxItem.ActualWidth + 2, Canvas.GetTop(ListBoxItem) - 30)
 
         Frm.Left = AbsolutePoint.X
         Frm.Top = AbsolutePoint.Y
-
+        Frm.WindowStartupLocation = WindowStartupLocation.Manual
         Frm.Owner = Window.GetWindow(Me)
 
         Dim Map As MapData = Me.DataContext

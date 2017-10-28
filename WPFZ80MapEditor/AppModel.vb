@@ -8,6 +8,7 @@ Public Enum LayerType
     EnemyLayer
     MiscLayer
     TestingLayer
+    ScriptLayer
 End Enum
 
 Public Class AppModel

@@ -123,7 +123,19 @@
             <TabItem Header="Scripts">
                 <ScrollViewer Margin="0,0,0,0" VerticalScrollBarVisibility="Auto">
                     <StackPanel Orientation="Vertical">
-                        <ItemsControl Grid.Row="0" ItemsSource="{Binding Path=Scenario.ScriptDefs.Keys}" IsTabStop="False" Padding="0,0,0,0" 
+                        <Label>Map-specific</Label>
+                        <ListBox Grid.Row="0" ItemsSource="{Binding Path=SelectedMap.ZScript}" IsTabStop="False" Padding="0,0,0,0" 
+                          Background="#FFF9F9F9">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Center" SnapsToDevicePixels="True" MouseLeftButtonDown="Script_MouseLeftButtonDown">
+                                        <TextBlock Text="{Binding Path=Args[1].Value}" VerticalAlignment="Center" Name="TextBlock1"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ListBox>
+                        <Label>Built-in</Label>
+                        <ItemsControl Grid.Row="0" ItemsSource="{Binding Path=Scenario.BuiltinScripts.Keys}" IsTabStop="False" Padding="0,0,0,0" 
                           Background="#FFF9F9F9">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>

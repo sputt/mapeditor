@@ -206,6 +206,7 @@
 							<ListBoxItem Tag="{x:Static local:LayerType.ObjectLayer}" Content="Objects"/>
 							<ListBoxItem Tag="{x:Static local:LayerType.EnemyLayer}" Content="Enemies"/>
 							<ListBoxItem Tag="{x:Static local:LayerType.MiscLayer}" Content="Misc"/>
+                            <ListBoxItem Tag="{x:Static local:LayerType.ScriptLayer}" Content="Scripts"/>
 						</ListBox>
 					</ToolBar>
 				</WrapPanel>

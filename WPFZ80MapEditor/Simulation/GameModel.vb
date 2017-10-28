@@ -274,10 +274,13 @@ Public Class GameModel
         Dim Output = _Asm.Assemble()
         'Debug.Write(_Asm.StdOut.ReadAll())
 
+
+        _Calc.Visible = True
+
         _Calc.LoadFile(MapEditorControl.RomPath)
         _Calc.LoadFile(_Asm.OutputFile)
 
-        _Calc.Visible = True
+
         _Calc.Run()
         _Calc.Reset()
 

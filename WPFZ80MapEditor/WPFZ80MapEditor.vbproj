@@ -154,6 +154,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Expression.Interactions" />
+    <Reference Include="Revsoft.TextEditor, Version=3.0.0.9999, Culture=neutral, PublicKeyToken=4d61825e8dd49f1a, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Wabbitcode\Wabbitcode\bin\X64\Debug\Revsoft.TextEditor.dll</HintPath>
+    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -195,6 +199,9 @@
     </Compile>
     <Compile Include="ResizeThumb.vb" />
     <Compile Include="ScenarioDefs.vb" />
+    <Compile Include="ScriptLayer.xaml.vb">
+      <DependentUpon>ScriptLayer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Simulation\AnimatedTile.xaml.vb">
       <DependentUpon>AnimatedTile.xaml</DependentUpon>
     </Compile>
@@ -269,6 +276,10 @@
     <Page Include="MiscLayer.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ScriptLayer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Simulation\AnimatedTile.xaml">
       <SubType>Designer</SubType>
@@ -418,12 +429,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Scenario\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Branches\Wabbitcode\ICSharpCode.TextEditor\Project\Revsoft.TextEditor.csproj">
-      <Project>{2d18be89-d210-49eb-a9dd-2246fbb3df6d}</Project>
-      <Name>Revsoft.TextEditor</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>

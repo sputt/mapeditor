@@ -59,6 +59,12 @@ Public Structure AZMisc
     Public Aux As UShort
 End Structure
 
+<StructLayout(LayoutKind.Sequential, Pack:=1)>
+Public Structure AZScript
+    Public ID As Byte
+    Public ScriptAddr As UShort
+End Structure
+
 Public Interface IBaseGeneralObject
     Inherits ICloneable
 
@@ -911,4 +917,18 @@ Public Class ZAnim
         MyBase.New(Def, {X, Y}, Data)
     End Sub
 
+End Class
+
+Public Class ZScript
+    Inherits ZBaseObject(Of AZScript, ZScript)
+
+    Protected Overrides Sub FromStruct(Scr As AZScript)
+    End Sub
+
+    Public Sub New()
+    End Sub
+
+    Public Sub New(Def As ZDef, Data As Stream, ParamArray Args() As Object)
+        MyBase.New(Def, Args, Data)
+    End Sub
 End Class

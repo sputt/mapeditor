@@ -99,6 +99,8 @@ Public Class MapData
 
     Public Property ZMisc As ObservableCollection(Of ZMisc)
 
+    Public Property ZScript As ObservableCollection(Of ZScript)
+
     Public Sub AddFromDef(Def As ZDef, X As Byte, Y As Byte)
         If Scenario.ObjectDefs.ContainsValue(Def) Then
             Dim ObjTest As New ZObject(Def, X, Y)
@@ -145,6 +147,7 @@ Public Class MapData
         ZObjects = New ObservableCollection(Of IBaseGeneralObject)
         ZEnemies = New ObservableCollection(Of IBaseGeneralObject)
         ZMisc = New ObservableCollection(Of ZMisc)
+        ZScript = New ObservableCollection(Of ZScript)
 
         _ID = Guid.NewGuid()
     End Sub
@@ -204,6 +207,7 @@ Public Class MapData
         Map.ZObjects = CloneAll(ZObjects)
         Map.ZEnemies = CloneAll(ZEnemies)
         Map.ZMisc = CloneAll(ZMisc)
+        Map.ZScript = CloneAll(ZScript)
         Map._ID = ID
         Map.Index = Index
 

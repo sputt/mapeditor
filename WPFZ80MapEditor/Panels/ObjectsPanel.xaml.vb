@@ -108,9 +108,15 @@
     End Sub
 
     Private Sub Script_MouseLeftButtonDown(sender As Object, e As MouseButtonEventArgs)
-        Dim FileName As String = CType(sender, StackPanel).DataContext
-        Dim FilePath = DataContext.Scenario.ScriptDefs(FileName)
-        Dim ScriptWindow = New EditorWindow(FilePath)
+        Dim FileName As String
+        Dim Scr = CType(sender, StackPanel).DataContext
+        If TypeOf Scr Is ZScript Then
+            FileName = Scr.Args(1).Value.Replace("_SCRIPT", "")
+        Else
+            FileName = Scr
+        End If
+        Dim FilePath = DataContext.Scenario.BuiltinScripts(FileName.ToLower())
+        Dim ScriptWindow = New EditorWindow(Application.Current.MainWindow, FilePath)
         ScriptWindow.Show()
     End Sub
 End Class
