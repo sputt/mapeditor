@@ -283,6 +283,52 @@ Namespace ValueConverters
         End Function
     End Class
 
+    Public Class ZScriptToObjectIDConverter
+        Implements IMultiValueConverter
+
+        Dim Map As MapData
+
+        Public Function Convert1(values() As Object, targetType As Type, parameter As Object, culture As Globalization.CultureInfo) As Object Implements IMultiValueConverter.Convert
+            Dim ScriptName As String = values(0)
+            Me.Map = values(1)
+            If Not ScriptName.StartsWith(Map.MapPrefix) Then
+                ScriptName = Map.MapPrefix & ScriptName
+            End If
+
+            Dim Result = (From i As ZScript In Me.Map.ZScript Where ScriptName = i.Args(0).Value Select i).FirstOrDefault()
+            Return Result
+        End Function
+
+        Public Function ConvertBack1(value As Object, targetTypes() As Type, parameter As Object, culture As Globalization.CultureInfo) As Object() Implements IMultiValueConverter.ConvertBack
+            If TypeOf value Is ZScript Then
+                Dim Script As ZScript = value
+                Return {Script.Args(0).Value, Map}
+            Else
+                Return Nothing
+            End If
+        End Function
+    End Class
+
+    Public Class ZScriptToObjectDisplayConverter
+        Implements IMultiValueConverter
+
+        Dim Map As MapData
+
+        Public Function Convert(values() As Object, targetType As Type, parameter As Object, culture As Globalization.CultureInfo) As Object Implements IMultiValueConverter.Convert
+            Me.Map = values(1)
+            If TypeOf values(0) Is ZScript Then
+                Dim Script As ZScript = values(0)
+                Return Script.Args(1).Value.Replace(Map.MapPrefix, "").Replace("_SCRIPT", "")
+            Else
+                Return values(0)
+            End If
+        End Function
+
+        Public Function ConvertBack(value As Object, targetTypes() As Type, parameter As Object, culture As Globalization.CultureInfo) As Object() Implements IMultiValueConverter.ConvertBack
+            Return Nothing
+        End Function
+    End Class
+
     Public Enum TileIndexType
         X
         Y

@@ -1,4 +1,6 @@
-﻿Imports WPFZ80MapEditor
+﻿Imports ScriptCompiler
+Imports WPFZ80MapEditor
+
 Class Application
 
     ' Application-level events, such as Startup, Exit, and DispatcherUnhandledException

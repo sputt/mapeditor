@@ -116,7 +116,7 @@
             FileName = Scr
         End If
         Dim FilePath = DataContext.Scenario.BuiltinScripts(FileName.ToLower())
-        Dim ScriptWindow = New EditorWindow(Application.Current.MainWindow, FilePath)
-        ScriptWindow.Show()
+        'Dim ScriptWindow = New EditorWindow(Application.Current.MainWindow, FilePath)
+        'ScriptWindow.Show()
     End Sub
 End Class

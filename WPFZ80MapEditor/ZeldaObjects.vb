@@ -547,10 +547,12 @@ Public Class ZDefArgObjectID
     End Sub
 
     Public Property ObjectIDs As IEnumerable(Of String)
+    Public Property Scripts As IEnumerable(Of KeyValuePair(Of String, String))
 
-    Public Sub New(Name As String, Description As String)
+    Public Sub New(Name As String, Description As String, Scripts As IEnumerable(Of KeyValuePair(Of String, String)))
         MyBase.New(Name, Description)
         Dim ObjectIDs As New List(Of String)
+
 
         For Each Label In SPASMHelper.Labels
             If Char.ToUpper(Label.Key.Chars(0)) = "K" And Label.Value < &H4000 And Not Label.Key.Contains("_GFX") Then
@@ -558,12 +560,14 @@ Public Class ZDefArgObjectID
             End If
         Next
 
+        Me.Scripts = Scripts
+
         ObjectIDs.Sort()
         Me.ObjectIDs = ObjectIDs
     End Sub
 
     Public Overrides Function Clone() As Object
-        Dim Copy As New ZDefArgObjectID(Name, Description)
+        Dim Copy As New ZDefArgObjectID(Name, Description, Scripts)
         Copy.Value = Value
         Copy.ObjectIDs = ObjectIDs
         Return Copy
@@ -773,7 +777,7 @@ Public Class ZDef
                 Case "ef"
                     NewArg = New ZDefArgEnemyFlags(Name, Description)
                 Case "type", "ztype"
-                    NewArg = New ZDefArgObjectID(Name, Description)
+                    NewArg = New ZDefArgObjectID(Name, Description, Scenario.BuiltinScripts)
                 Case "ap"
                     NewArg = New ZDefArgGraphic(Name, Description, Scenario.Images)
                 Case "g", "gg"
@@ -921,6 +925,8 @@ End Class
 
 Public Class ZScript
     Inherits ZBaseObject(Of AZScript, ZScript)
+
+    Public Property ScriptContents As String
 
     Protected Overrides Sub FromStruct(Scr As AZScript)
     End Sub

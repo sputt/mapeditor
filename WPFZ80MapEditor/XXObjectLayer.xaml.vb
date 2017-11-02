@@ -303,16 +303,20 @@ Public Class XXObjectLayer
 
         Dim ListBoxItem As ListBoxItem = ObjectListBox.ItemContainerGenerator.ContainerFromItem(ObjectListBox.SelectedItem)
         Dim ObjOld As IBaseGeneralObject = ObjectListBox.SelectedItem
-        Dim AbsolutePoint = New Point(Canvas.GetLeft(ListBoxItem) + ListBoxItem.ActualWidth + 2, Canvas.GetTop(ListBoxItem) - 30)
+        Dim AbsolutePoint = ListBoxItem.PointToScreen(New Point(ListBoxItem.ActualWidth + 2, 0)) '  Me.PointToScreen(New Point(Canvas.GetLeft(ListBoxItem) + ListBoxItem.ActualWidth + 2, Canvas.GetTop(ListBoxItem) - 30))
+        Dim source = PresentationSource.FromVisual(ListBoxItem)
 
-        Frm.Left = AbsolutePoint.X
-        Frm.Top = AbsolutePoint.Y
+        Dim dpiX = 96.0 * source.CompositionTarget.TransformToDevice.M11
+        Dim dpiY = 96.0 * source.CompositionTarget.TransformToDevice.M22
+
+        Frm.Left = AbsolutePoint.X * 96.0 / dpiX
+        Frm.Top = AbsolutePoint.Y * 96.0 / dpiY
+
         Frm.WindowStartupLocation = WindowStartupLocation.Manual
         Frm.Owner = Window.GetWindow(Me)
 
-        Dim Map As MapData = Me.DataContext
-
         Dim ObjClone As IBaseGeneralObject = ObjOld.Clone
+        Frm.SelectedMap = Map
         Frm.DataContext = ObjClone
 
         If Frm.ShowDialog() = True Then

@@ -159,6 +159,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Script Compiler\Script Compiler.vcxproj">
+      <Project>{f7542ab4-0099-43ba-a955-bc07f57987b3}</Project>
+      <Name>Script Compiler</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WPFZ80MapEditor\WPFZ80MapEditor.vbproj">
       <Project>{3b403a9f-d296-41ed-8863-5f2e223a1e90}</Project>
       <Name>WPFZ80MapEditor</Name>

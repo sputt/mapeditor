@@ -138,6 +138,8 @@ Public Class MapData
         End Set
     End Property
 
+    Public Property MapPrefix As String
+
     Private Sub Initialize(newScenario As Scenario, NewTileset As Integer)
         Scenario = newScenario
         If Scenario IsNot Nothing Then
@@ -176,11 +178,12 @@ Public Class MapData
     End Function
 
     Public Shared Function EmptyMap(NewScenario, NewTileset, X, Y, NumberOfTiles)
-        Dim Map As New MapData(NewScenario, NewTileset)
-        Map.X = X
-        Map.Y = Y
-        Map.Exists = True
-        Map.TileData = New ObservableCollection(Of Byte)(Enumerable.Repeat(CByte(0), NumberOfTiles).ToList())
+        Dim Map As New MapData(NewScenario, NewTileset) With {
+            .X = X,
+            .Y = Y,
+            .Exists = True,
+            .TileData = New ObservableCollection(Of Byte)(Enumerable.Repeat(CByte(0), NumberOfTiles).ToList())
+        }
         Return Map
     End Function
 

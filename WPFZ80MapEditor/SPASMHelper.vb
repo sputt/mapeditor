@@ -46,7 +46,6 @@ Public Class SPASMHelper
         Assembler.IncludeDirectories.Add(Path)
         Assembler.IncludeDirectories.Add(Path & "\Images")
         Assembler.IncludeDirectories.Add(Path & "\Defaults")
-        Assembler.IncludeDirectories.Add(Path & "\Maps")
         Assembler.Assemble("#include ""objectdef.inc""")
         'Dim StdOutput = Assembler.StdOut.ReadAll()
 

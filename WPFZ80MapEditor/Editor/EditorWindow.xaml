@@ -6,7 +6,10 @@
         xmlns:local="clr-namespace:WPFZ80MapEditor"
         mc:Ignorable="d" ShowInTaskbar="False" ShowActivated="True"
         WindowStartupLocation="CenterOwner"
-        Title="EditorWindow" Height="453" Width="580">
+        Title="EditorWindow" Height="484.333" Width="587.334">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    </Window.Resources>
     <Window.CommandBindings>
         <CommandBinding Command="Undo"
                         CanExecute="UndoCanExecute"
@@ -18,7 +21,7 @@
                         CanExecute="SaveCanExecute"
                         Executed="SaveExecuted"/>
     </Window.CommandBindings>
-    <DockPanel Panel.ZIndex="2">
+    <DockPanel>
         <WrapPanel x:Name="ToolbarPanel" DockPanel.Dock="Top" Height="26" Panel.ZIndex="2" Background="White">
             <WrapPanel.Effect>
                 <DropShadowEffect Direction="270" Opacity="0.25" ShadowDepth="5" />
@@ -35,18 +38,18 @@
                 </Button>
             </ToolBar>
         </WrapPanel>
-        <Grid Panel.ZIndex="1" Margin="10">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="23"/>
-            </Grid.RowDefinitions>
-            <WindowsFormsHost Name="ScriptEditorHost" Grid.Row="0" Margin="-10,0,-10,10">
-                <local:ScriptEditor></local:ScriptEditor>
-            </WindowsFormsHost>
-            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Height="23">
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Grid.Row="0" Margin="0,10,0,10" Visibility="{Binding Path=IsNew, RelativeSource={RelativeSource AncestorType=local:EditorWindow}, Converter={StaticResource BoolToVis}}">
+            <Label>New script name:</Label>
+            <TextBox Name="NewScriptTextBox" Height="23" Width="160"></TextBox>
+        </StackPanel>
+        <Grid DockPanel.Dock="Bottom" Height="35" Margin="0,0,10,0" >
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Height="23">
                 <Button Content="OK" IsDefault="true" Width="75" Name="OKButton"/>
                 <Button Content="Cancel" IsCancel="True" Width="75" Margin="10,0,0,0" Name="CancelButton" />
             </StackPanel>
         </Grid>
+        <WindowsFormsHost Name="ScriptEditorHost" Panel.ZIndex="1">
+            <local:ScriptEditor></local:ScriptEditor>
+        </WindowsFormsHost>
     </DockPanel>
 </Window>

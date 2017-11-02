@@ -10,12 +10,14 @@
             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
         Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" WindowStyle="ToolWindow"
-        Title="{Binding Path=Definition.Name}" SizeToContent="WidthAndHeight" ResizeMode="NoResize" ShowInTaskbar="False">
+        Title="{Binding Path=Definition.Name}" SizeToContent="WidthAndHeight" ResizeMode="NoResize" ShowInTaskbar="False" Height="154.672">
     <Window.Resources>
         <localconverters:BitValueConverter x:Key="BitConverter"/>
         <local:ArgToColumnConverter x:Key="ArgToColumnConverter"/>
         <localconverters:GraphicsConverter x:Key="GraphicsConverter"/>
         <localconverters:DirectionConverter x:Key="DirectionConverter"/>
+        <localconverters:ZScriptToObjectIDConverter x:Key="ZScriptToObjectIDConverter"/>
+        <localconverters:ZScriptToObjectDisplayConverter x:Key="ZScriptToObjectDisplayConverter"/>
 
         <local:ObjectIDCollection x:Key="ObjectIDArray">
             <sys:String>KPUSH_BLOCK</sys:String>
@@ -73,7 +75,37 @@
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type local:ZDefArgObjectID}">
-            <ComboBox SelectedItem="{Binding Path=Value}" ItemsSource="{Binding ObjectIDs}" Width="140" />
+            <StackPanel Orientation="Horizontal">
+                <ComboBox ItemsSource="{Binding ComboScriptDefinitions, RelativeSource={RelativeSource AncestorType=local:ObjectProperties}}" Width="160" SelectionChanged="ComboBox_SelectionChanged" DropDownOpened="ComboBox_DropDownOpened" >
+                    <ComboBox.SelectedItem>
+                        <MultiBinding Converter="{StaticResource ZScriptToObjectIDConverter}">
+                            <Binding Path="Value"/>
+                            <Binding Path="SelectedMap.">
+                                <Binding.RelativeSource>
+                                    <RelativeSource AncestorType="local:ObjectProperties"/>
+                                </Binding.RelativeSource>
+                            </Binding>
+                        </MultiBinding>
+                    </ComboBox.SelectedItem>
+                    <ComboBox.ItemTemplate>
+                        <ItemContainerTemplate>
+                            <TextBlock>
+                                <TextBlock.Text>
+                                    <MultiBinding Converter="{StaticResource ZScriptToObjectDisplayConverter}">
+                                        <Binding Path="."/>
+                                        <Binding Path="SelectedMap">
+                                            <Binding.RelativeSource>
+                                                <RelativeSource AncestorType="local:ObjectProperties"/>
+                                            </Binding.RelativeSource>
+                                        </Binding>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </ItemContainerTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <Button Width="25" Click="Button_Click" Margin="5,0,0,0">...</Button>
+            </StackPanel>
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type local:ZDefArg8Bit}">
@@ -172,48 +204,48 @@
 
         <DataTemplate DataType="{x:Type local:ZDefArgEnemyFlags}">
             <StackPanel Orientation="Vertical">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="19"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="19"/>
                         <RowDefinition Height="19"/>
                     </Grid.RowDefinitions>
-                <CheckBox Content="Invulnerable" Grid.Row="0" Grid.Column="0" Margin="0,0,10,0">
-                    <CheckBox.IsChecked>
-                        <Binding Path="Value"
+                    <CheckBox Content="Invulnerable" Grid.Row="0" Grid.Column="0" Margin="0,0,10,0">
+                        <CheckBox.IsChecked>
+                            <Binding Path="Value"
                                      Converter="{StaticResource BitConverter}"
                                      ConverterParameter="128">
-                        </Binding>
-                    </CheckBox.IsChecked>
-                </CheckBox>
-                <CheckBox Content="Inverted" Grid.Row="0" Grid.Column="1">
-                    <CheckBox.IsChecked>
-                        <Binding Path="Value"
+                            </Binding>
+                        </CheckBox.IsChecked>
+                    </CheckBox>
+                    <CheckBox Content="Inverted" Grid.Row="0" Grid.Column="1">
+                        <CheckBox.IsChecked>
+                            <Binding Path="Value"
                                      Converter="{StaticResource BitConverter}"
                                      ConverterParameter="64">
-                        </Binding>
-                    </CheckBox.IsChecked>
-                </CheckBox>
-                <CheckBox Content="4-Direction" Grid.Row="1" Grid.Column="0">
-                    <CheckBox.IsChecked>
-                        <Binding Path="Value"
+                            </Binding>
+                        </CheckBox.IsChecked>
+                    </CheckBox>
+                    <CheckBox Content="4-Direction" Grid.Row="1" Grid.Column="0">
+                        <CheckBox.IsChecked>
+                            <Binding Path="Value"
                                      Converter="{StaticResource BitConverter}"
                                      ConverterParameter="32">
-                        </Binding>
-                    </CheckBox.IsChecked>
-                </CheckBox>
-                <CheckBox Content="Non-harming" Grid.Row="1" Grid.Column="1">
-                    <CheckBox.IsChecked>
-                        <Binding Path="Value"
+                            </Binding>
+                        </CheckBox.IsChecked>
+                    </CheckBox>
+                    <CheckBox Content="Non-harming" Grid.Row="1" Grid.Column="1">
+                        <CheckBox.IsChecked>
+                            <Binding Path="Value"
                                      Converter="{StaticResource BitConverter}"
                                      ConverterParameter="16">
-                        </Binding>
-                    </CheckBox.IsChecked>
-                </CheckBox>
-            </Grid>
+                            </Binding>
+                        </CheckBox.IsChecked>
+                    </CheckBox>
+                </Grid>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Type:" Margin="0,0,10,0"/>
                     <ComboBox Width="140" ItemsSource="{Binding EnemyTypes}">
@@ -245,7 +277,7 @@
                 <ComboBox ItemsSource="{Binding Source={StaticResource cvs}}" Width="200" SelectedValue="{Binding Value}"/>
             </Grid>
         </DataTemplate>
-        
+
         <DataTemplate DataType="{x:Type local:ZDefArg}">
             <TextBox Text="{Binding Path=Value}" Width="80" Height="19" VerticalAlignment="Center"/>
         </DataTemplate>
@@ -257,50 +289,50 @@
             <RowDefinition Height="23"/>
         </Grid.RowDefinitions>
         <Border Margin="0,0,0,10" ScrollViewer.VerticalScrollBarVisibility="Auto" BorderBrush="Transparent">
-            <StackPanel Orientation="Vertical">
-            <ItemsControl Grid.Row="0" ItemsSource="{Binding Path=ArgsAndLabels}" Name="ObjProperties" IsTabStop="False" BorderBrush="Transparent">
-                <ItemsControl.ItemContainerStyle>
-                    <Style TargetType="ContentPresenter">
-                        <Setter Property="Grid.Row" Value="{Binding ArgIndex}" />
-                        <Setter Property="Grid.Column" Value="{Binding ., Converter={StaticResource ArgToColumnConverter}}" />
-                        <Setter Property="HorizontalAlignment" Value="Left"/>
-                        <Setter Property="Margin" Value="0,5,10,5"/>
-                    </Style>
-                </ItemsControl.ItemContainerStyle>
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width=".5*" />
-                                <ColumnDefinition Width=".5*" />
-                            </Grid.ColumnDefinitions>
-                        </Grid>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
+            <StackPanel Orientation="Vertical" Margin="0,0,0,0">
+                <ItemsControl Grid.Row="0" ItemsSource="{Binding Path=ArgsAndLabels}" Name="ObjProperties" IsTabStop="False" BorderBrush="Transparent">
+                    <ItemsControl.ItemContainerStyle>
+                        <Style TargetType="ContentPresenter">
+                            <Setter Property="Grid.Row" Value="{Binding ArgIndex}" />
+                            <Setter Property="Grid.Column" Value="{Binding ., Converter={StaticResource ArgToColumnConverter}}" />
+                            <Setter Property="HorizontalAlignment" Value="Left"/>
+                            <Setter Property="Margin" Value="0,5,10,5"/>
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width=".5*" />
+                                    <ColumnDefinition Width=".5*" />
+                                </Grid.ColumnDefinitions>
+                            </Grid>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
                 </ItemsControl>
                 <TextBlock FontWeight="Bold" Margin="0,10,0,0">Advanced properties:</TextBlock>
-                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                <StackPanel Orientation="Vertical" Margin="0,5,0,0">
                     <CheckBox x:Name="EnableNamedSlot" Margin="0,0,10,0" VerticalAlignment="Center" Click="EnableNamedSlot_Click"
                               IsChecked="{Binding NamedSlot.Length, Mode=OneWay}">
                         <TextBlock Text="Enable named slot"></TextBlock>
                     </CheckBox>
-                    <TextBox x:Name="NamedSlot" Height="19" Width="140" VerticalAlignment="Center" IsEnabled="{Binding IsChecked, ElementName=EnableNamedSlot}" Text="{Binding NamedSlot, Mode=TwoWay}" CharacterCasing="Upper"/>
+                    <TextBox x:Name="NamedSlot" Height="20" VerticalAlignment="Center" IsEnabled="{Binding IsChecked, ElementName=EnableNamedSlot}" Text="{Binding NamedSlot, Mode=TwoWay}" CharacterCasing="Upper" Margin="0,6,0,0"/>
                 </StackPanel>
             </StackPanel>
         </Border>

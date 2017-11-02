@@ -3,3 +3,12 @@
 ################################################################################
 
 /.vs/WPFZ80MapEditor/v15
+/Script Compiler/x64/Debug
+/WPFZ80MapEditor/bin/x64/Debug
+/WPFZ80MapEditor/obj/x64/Debug
+/WPFZ80MapEditor/obj/x86/Debug
+/WPFZ80MapEditorExe/bin/x64/Debug
+/WPFZ80MapEditorExe/obj
+/WPFZ80MapEditorTest/obj/Debug
+/WPFZ80MapEditorTest/obj
+/x64/Debug

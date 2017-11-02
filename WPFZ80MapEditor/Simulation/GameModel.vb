@@ -258,10 +258,7 @@ Public Class GameModel
         _Asm.InputFile = "zelda_all.asm"
         _Asm.OutputFile = Path.Combine(MapEditorControl.ZeldaFolder, "zelda.8xk")
 
-        _Asm.IncludeDirectories.Add("defaults")
         _Asm.IncludeDirectories.Add("images")
-        _Asm.IncludeDirectories.Add("maps")
-        _Asm.IncludeDirectories.Add("scripts")
 
         _Asm.Defines.Add("_MAPEDITOR_TEST", 1)
         '_MAPEDITOR_SCENARIONAME, _MAPEDITOR_MAPINDEX, _MAPEDITOR_STARTX, _MAPEDITOR_STARTY)
@@ -429,6 +426,7 @@ Public Class GameModel
 
     Public Sub Pause()
         _Calc.Break()
+        _IsLoading = False
     End Sub
 
     Private Shared Function GetAZAnimBytes(ZAnim As AZAnim) As Byte()
@@ -740,7 +738,9 @@ Public Class GameModel
 
         ProcessEvent.Set()
 
-        FrameProcessThread.Join()
+        If FrameProcessThread.IsAlive Then
+            FrameProcessThread.Join()
+        End If
 
         ' Wait for Wabbitemu to be collected
         System.GC.Collect()
