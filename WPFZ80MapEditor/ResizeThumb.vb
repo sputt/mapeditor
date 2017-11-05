@@ -63,13 +63,21 @@ Public Class ResizeThumb
 
             Dim PrevX = SPASMHelper.Eval(Misc.PreviousVersion.Args(0).Value)
             Dim PrevY = SPASMHelper.Eval(Misc.PreviousVersion.Args(1).Value)
-            Dim PrevW = SPASMHelper.Eval(Misc.PreviousVersion.Args(2).Value)
-            Dim PrevH = SPASMHelper.Eval(Misc.PreviousVersion.Args(3).Value)
+            Dim PrevW = Misc.PreviousVersion.W
+            Dim PrevH = Misc.PreviousVersion.H
+            If Misc.PreviousVersion.Args.Count > 2 Then
+                PrevW = SPASMHelper.Eval(Misc.PreviousVersion.Args(2).Value)
+                PrevH = SPASMHelper.Eval(Misc.PreviousVersion.Args(3).Value)
+            End If
 
             Dim CurX = SPASMHelper.Eval(Misc.Args(0).Value)
             Dim CurY = SPASMHelper.Eval(Misc.Args(1).Value)
-            Dim CurW = SPASMHelper.Eval(Misc.Args(2).Value)
-            Dim CurH = SPASMHelper.Eval(Misc.Args(3).Value)
+            Dim CurW = Misc.W
+            Dim CurH = Misc.H
+            If Misc.Args.Count > 2 Then
+                CurW = SPASMHelper.Eval(Misc.Args(2).Value)
+                CurH = SPASMHelper.Eval(Misc.Args(3).Value)
+            End If
 
             If VerticalAlignment = Windows.VerticalAlignment.Bottom Then
                 CurH = PrevH + VDelta

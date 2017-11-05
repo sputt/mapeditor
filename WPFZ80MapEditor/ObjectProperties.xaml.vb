@@ -59,7 +59,7 @@ Public Class ObjectProperties
         End If
     End Function
 
-    Private Sub Button_Click(sender As Object, e As RoutedEventArgs)
+    Private Sub Edit_Click(sender As Object, e As RoutedEventArgs)
         Dim Converter As New ZScriptToObjectIDConverter()
         Dim Script = Converter.Convert1({sender.DataContext.Value, SelectedMap}, GetType(ZScript), Nothing, Nothing)
         Dim Result = OpenEditor(Script, False)
@@ -68,6 +68,17 @@ Public Class ObjectProperties
             Dim Contents = Reader.ReadToEnd()
             Script.ScriptContents = Contents
             Reader.Close()
+        End If
+    End Sub
+
+    Private Sub Delete_Click(sender As Object, e As RoutedEventArgs)
+        Dim Converter As New ZScriptToObjectIDConverter()
+        Dim Script = Converter.Convert1({sender.DataContext.Value, SelectedMap}, GetType(ZScript), Nothing, Nothing)
+        Dim Result = MsgBox("Are you sure you want to delete this script from this map?", vbApplicationModal Or vbYesNo)
+        If Result = vbYes Then
+            SelectedMap.ZScript.Remove(Script)
+            ComboScriptDefinitions.Remove(Script)
+            sender.DataContext.Value = Nothing
         End If
     End Sub
 

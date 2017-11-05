@@ -291,6 +291,9 @@ Namespace ValueConverters
         Public Function Convert1(values() As Object, targetType As Type, parameter As Object, culture As Globalization.CultureInfo) As Object Implements IMultiValueConverter.Convert
             Dim ScriptName As String = values(0)
             Me.Map = values(1)
+            If ScriptName Is Nothing Then
+                Return Nothing
+            End If
             If Not ScriptName.StartsWith(Map.MapPrefix) Then
                 ScriptName = Map.MapPrefix & ScriptName
             End If

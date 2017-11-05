@@ -249,8 +249,10 @@ Public Class ZBaseObject(Of ZBase As New, Base As {New, IGeneralObject(Of ZBase)
     Public Sub UpdatePosition(X As Double, Y As Double, W As Double, H As Double) Implements IBaseGeneralObject.UpdatePosition
         Args(0).Value = Math.Min(255, Math.Max(0, CInt(Math.Round(X))))
         Args(1).Value = Math.Min(255, Math.Max(0, CInt(Math.Round(Y))))
-        Args(2).Value = Math.Min(255, Math.Max(0, CInt(Math.Round(W))))
-        Args(3).Value = Math.Min(255, Math.Max(0, CInt(Math.Round(H))))
+        If Args.Count > 2 Then
+            Args(2).Value = Math.Min(255, Math.Max(0, CInt(Math.Round(W))))
+            Args(3).Value = Math.Min(255, Math.Max(0, CInt(Math.Round(H))))
+        End If
     End Sub
 
     Sub Jump(Dx As Integer, Dy As Integer)
