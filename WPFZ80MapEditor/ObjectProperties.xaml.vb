@@ -18,6 +18,15 @@ Public Class ObjectProperties
         End Set
     End Property
 
+    Public ReadOnly Property NamedSlots As IList(Of String)
+        Get
+            Return (From Obj In SelectedMap.ZAll
+                    Where Obj.NamedSlot IsNot Nothing
+                    Select Obj.NamedSlot
+                    Order By NamedSlot).ToList()
+        End Get
+    End Property
+
     Public Property ComboScriptDefinitions As New ObservableCollection(Of Object)
 
     Private Sub OKButton_Click(sender As System.Object, e As System.Windows.RoutedEventArgs) Handles OKButton.Click
@@ -39,7 +48,6 @@ Public Class ObjectProperties
 
     Private Function OpenEditor(Script As ZScript, IsNew As Boolean) As Tuple(Of String, String)
         Dim Converter As New ZScriptToObjectIDConverter()
-
         Dim RandomFile = System.IO.Path.GetTempFileName() & ".zcr"
 
         Dim Stream = New StreamWriter(RandomFile)
@@ -50,7 +58,18 @@ Public Class ObjectProperties
         End If
         Stream.Close()
 
-        Dim ScriptWindow = New EditorWindow(Application.Current.MainWindow, If(IsNew, "New Script", Script.Args(1).Value), RandomFile, IsNew)
+
+        Dim SlotConverter As New SlotPrefixConverter()
+
+        Dim Replacements As New Dictionary(Of String, String)
+        For Each Obj In SelectedMap.ZAll
+            If Obj.NamedSlot IsNot Nothing Then
+                Replacements(Obj.NamedSlot) = SlotConverter.Convert({Obj.NamedSlot, SelectedMap},
+                                                                    GetType(String), Nothing, Nothing)
+            End If
+        Next
+        Dim ScriptWindow = New EditorWindow(Application.Current.MainWindow, If(IsNew, "New Script", Script.Args(1).Value),
+                                            RandomFile, IsNew, Replacements)
         Dim Result = ScriptWindow.ShowDialog()
         If Result Then
             Return New Tuple(Of String, String)(RandomFile, ScriptWindow.ScriptName)
@@ -86,10 +105,18 @@ Public Class ObjectProperties
 
     Private Sub ComboBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs)
         If e.AddedItems.Contains("Add new...") Then
-            Dim ScriptName As String
             Dim Result = OpenEditor(Nothing, True)
             If Result IsNot Nothing Then
-                Dim Script As ZScript = ZScript.FromDef(SelectedMap.Scenario.ScriptDef, {SelectedMap.MapPrefix & "SCRIPT_" & (SelectedMap.ZScript.Count + 1), SelectedMap.MapPrefix & Result.Item2 & "_SCRIPT"})
+                Dim Idx = 1
+                Do While SelectedMap.ZScript.Any(Function(Scr)
+                                                     Return Scr.Args(0).Value = SelectedMap.MapPrefix & "SCRIPT_" & Idx
+                                                 End Function)
+                    Idx += 1
+                Loop
+
+                Dim ScriptId = SelectedMap.MapPrefix & "SCRIPT_" & Idx
+
+                Dim Script As ZScript = ZScript.FromDef(SelectedMap.Scenario.ScriptDef, {ScriptId, SelectedMap.MapPrefix & Result.Item2 & "_SCRIPT"})
                 Dim Reader = New StreamReader(Result.Item1)
                 Dim Contents = Reader.ReadToEnd()
                 Script.ScriptContents = Contents

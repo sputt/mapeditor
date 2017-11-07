@@ -551,27 +551,46 @@ Public Class ZDefArgObjectID
     Public Property ObjectIDs As IEnumerable(Of String)
     Public Property Scripts As IEnumerable(Of KeyValuePair(Of String, String))
 
-    Public Sub New(Name As String, Description As String, Scripts As IEnumerable(Of KeyValuePair(Of String, String)))
-        MyBase.New(Name, Description)
+    Public Sub New(Name As String, Description As String, Properties As Dictionary(Of String, String))
+        MyBase.New(Name, Description, Properties)
         Dim ObjectIDs As New List(Of String)
-
 
         For Each Label In SPASMHelper.Labels
             If Char.ToUpper(Label.Key.Chars(0)) = "K" And Label.Value < &H4000 And Not Label.Key.Contains("_GFX") Then
-                ObjectIDs.Add(Label.Key)
+                If Properties.ContainsKey("ID_FILTER") AndAlso Label.Key Like Properties("ID_FILTER").ToUpper() Then
+                    ObjectIDs.Add(Label.Key)
+                End If
             End If
         Next
-
-        Me.Scripts = Scripts
-
         ObjectIDs.Sort()
         Me.ObjectIDs = ObjectIDs
     End Sub
 
     Public Overrides Function Clone() As Object
-        Dim Copy As New ZDefArgObjectID(Name, Description, Scripts)
+        Dim Copy As New ZDefArgObjectID(Name, Description, Properties)
         Copy.Value = Value
         Copy.ObjectIDs = ObjectIDs
+        Return Copy
+    End Function
+End Class
+
+Public Class ZDefArgObjectScript
+    Inherits ZDefArg
+    Public Sub New()
+    End Sub
+
+    Public Property Scripts As IEnumerable(Of KeyValuePair(Of String, String))
+
+    Public Sub New(Name As String, Description As String, Scripts As IEnumerable(Of KeyValuePair(Of String, String)))
+        MyBase.New(Name, Description)
+
+        Me.Scripts = Scripts
+    End Sub
+
+    Public Overrides Function Clone() As Object
+        Dim Copy As New ZDefArgObjectScript(Name, Description, Scripts)
+        Copy.Value = Value
+        Copy.Scripts = Scripts
         Return Copy
     End Function
 End Class
@@ -665,6 +684,7 @@ Public Class ZDefArg
     Public Property Description As String
 
     Public Property ArgIndex As Integer
+    Public Property Properties As Dictionary(Of String, String)
 
     Public ReadOnly Property LabelText
         Get
@@ -689,9 +709,10 @@ Public Class ZDefArg
         End Set
     End Property
 
-    Public Sub New(Name As String, Description As String)
+    Public Sub New(Name As String, Description As String, Optional Properties As Dictionary(Of String, String) = Nothing)
         Me.Name = Name
         Me.Description = Description
+        Me.Properties = Properties
     End Sub
 
     Public Sub New()
@@ -764,7 +785,8 @@ Public Class ZDef
         End If
     End Sub
 
-    Public Sub AddArg(Name As String, Description As String, Scenario As Scenario, Optional IsOptional As Boolean = False)
+    Public Sub AddArg(Name As String, Description As String, Scenario As Scenario,
+                      Properties As Dictionary(Of String, String), Optional IsOptional As Boolean = False)
         Dim NewArg As ZDefArg
         If Description.StartsWith("Is ") Or Description.StartsWith("Are ") Then
             NewArg = New ZDefArgBoolean(Name, Description)
@@ -779,7 +801,9 @@ Public Class ZDef
                 Case "ef"
                     NewArg = New ZDefArgEnemyFlags(Name, Description)
                 Case "type", "ztype"
-                    NewArg = New ZDefArgObjectID(Name, Description, Scenario.BuiltinScripts)
+                    NewArg = New ZDefArgObjectScript(Name, Description, Scenario.BuiltinScripts)
+                Case "id"
+                    NewArg = New ZDefArgObjectID(Name, Description, Properties)
                 Case "ap"
                     NewArg = New ZDefArgGraphic(Name, Description, Scenario.Images)
                 Case "g", "gg"

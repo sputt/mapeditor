@@ -1,9 +1,12 @@
-﻿Imports Revsoft.TextEditor.Document
+﻿Imports System.IO
+Imports Revsoft.TextEditor.Document
 
 Public Class EditorWindow
 
     Private EditorFilePath As String
     Private ScriptEditor As ScriptEditor
+    Private _FilePath As String
+    Private _Replacements As IDictionary(Of String, String)
 
     Public Property ScriptName As String
 
@@ -23,10 +26,12 @@ Public Class EditorWindow
                            New PropertyMetadata(False))
 
 
-    Public Sub New(Owner As Window, ScriptName As String, filePath As String, IsNew As Boolean)
+    Public Sub New(Owner As Window, ScriptName As String, filePath As String, IsNew As Boolean, Replacements As IDictionary(Of String, String))
         InitializeComponent()
         Me.Owner = Owner
         Me.IsNew = IsNew
+        Me._FilePath = filePath
+        Me._Replacements = Replacements
 
         EditorFilePath = filePath
         Title = ScriptName
@@ -36,7 +41,18 @@ Public Class EditorWindow
         HighlightingManager.Manager.AddSyntaxModeFileProvider(provider)
         ScriptEditor.SetHighlighting("Zelda Script")
         ScriptEditor.ActiveTextAreaControl.HorizontalScroll.Enabled = False
-        ScriptEditor.LoadFile(filePath)
+
+        Dim Reader = New StreamReader(filePath)
+        Dim ScriptText = Reader.ReadToEnd()
+        Reader.Close()
+
+        For Each Rep In Replacements
+            ScriptText = ScriptText.Replace(Rep.Key, Rep.Value)
+        Next
+
+        ScriptEditor.Text = ScriptText
+
+        'ScriptEditor.LoadFile(filePath)
     End Sub
 
     Private Sub SaveCanExecute(sender As Object, e As CanExecuteRoutedEventArgs)
@@ -70,6 +86,9 @@ Public Class EditorWindow
     End Sub
 
     Private Sub OKButton_Click(sender As System.Object, e As System.Windows.RoutedEventArgs) Handles OKButton.Click
+        For Each Rep In _Replacements
+            ScriptEditor.Text = ScriptEditor.Text.Replace(Rep.Value, Rep.Key)
+        Next
         ScriptEditor.SaveFile(EditorFilePath)
         ScriptName = NewScriptTextBox.Text
         ScriptName = ScriptName.Replace(" ", "_").ToUpper()

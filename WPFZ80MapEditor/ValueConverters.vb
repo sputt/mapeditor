@@ -332,6 +332,25 @@ Namespace ValueConverters
         End Function
     End Class
 
+    Public Class SlotPrefixConverter
+        Implements IMultiValueConverter
+
+        Dim Map As MapData
+
+        Public Function Convert(values() As Object, targetType As Type, parameter As Object, culture As Globalization.CultureInfo) As Object Implements IMultiValueConverter.Convert
+            Me.Map = values(1)
+            Dim Slot As String = values(0)
+            If Slot Is Nothing Then
+                Return Nothing
+            End If
+            Return Slot.Replace(Map.MapPrefix, "").Replace("_SLOT", "")
+        End Function
+
+        Public Function ConvertBack(value As Object, targetTypes() As Type, parameter As Object, culture As Globalization.CultureInfo) As Object() Implements IMultiValueConverter.ConvertBack
+            Return {Map.MapPrefix & value & "_SLOT", Me.Map}
+        End Function
+    End Class
+
     Public Enum TileIndexType
         X
         Y

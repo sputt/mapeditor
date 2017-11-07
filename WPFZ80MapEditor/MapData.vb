@@ -101,6 +101,15 @@ Public Class MapData
 
     Public Property ZScript As ObservableCollection(Of ZScript)
 
+    Public ReadOnly Property ZAll As ICollection(Of IBaseGeneralObject)
+        Get
+            Return ZEnemies.Cast(Of IBaseGeneralObject) _
+            .Concat(ZObjects.Cast(Of IBaseGeneralObject)) _
+            .Concat(ZMisc.Cast(Of IBaseGeneralObject)) _
+            .Concat(ZScript.Cast(Of IBaseGeneralObject)).ToList()
+        End Get
+    End Property
+
     Public Sub AddFromDef(Def As ZDef, X As Byte, Y As Byte)
         If Scenario.ObjectDefs.ContainsValue(Def) Then
             Dim ObjTest As New ZObject(Def, X, Y)

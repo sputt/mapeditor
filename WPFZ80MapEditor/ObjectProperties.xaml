@@ -18,6 +18,7 @@
         <localconverters:DirectionConverter x:Key="DirectionConverter"/>
         <localconverters:ZScriptToObjectIDConverter x:Key="ZScriptToObjectIDConverter"/>
         <localconverters:ZScriptToObjectDisplayConverter x:Key="ZScriptToObjectDisplayConverter"/>
+        <localconverters:SlotPrefixConverter x:Key="SlotConverter"/>
 
         <local:ObjectIDCollection x:Key="ObjectIDArray">
             <sys:String>KPUSH_BLOCK</sys:String>
@@ -38,7 +39,6 @@
                     <local:ZDefArgObjectFlags Name="Flags" Description="Object flags" Value="231"/>
                     <local:ZDefArgEnemyFlags Name="Flags2" Description="Enemy flags" Value="231" EnemyTypes="{StaticResource EnemyTypeCollection}"/>
                     <local:ZDefArgBoolean Name="Initial" Description="Is initial?" Value="true"/>
-                    <local:ZDefArgObjectID Name="ID" Description="Object ID" ObjectIDs="{StaticResource ObjectIDArray}"/>
                     <!--<local:ZDefArgGenState Name="Dir" Description="Direction" Value="D_LEFT"/>-->
                 </local:ArgsCollection>
             </local:ZObject.Args>
@@ -73,8 +73,12 @@
                 </ComboBox.SelectedItem>
             </ComboBox>
         </DataTemplate>
-
+        
         <DataTemplate DataType="{x:Type local:ZDefArgObjectID}">
+            <ComboBox SelectedItem="{Binding Path=Value}" ItemsSource="{Binding ObjectIDs}" Width="140" />
+        </DataTemplate>
+        
+        <DataTemplate DataType="{x:Type local:ZDefArgObjectScript}">
             <StackPanel Orientation="Horizontal">
                 <ComboBox ItemsSource="{Binding ComboScriptDefinitions, RelativeSource={RelativeSource AncestorType=local:ObjectProperties}}" Width="160" SelectionChanged="ComboBox_SelectionChanged" DropDownOpened="ComboBox_DropDownOpened" >
                     <ComboBox.SelectedItem>
@@ -108,7 +112,7 @@
                 <Button Width="25" Click="Delete_Click" Margin="5,0,0,0">X</Button>
             </StackPanel>
         </DataTemplate>
-
+        
         <DataTemplate DataType="{x:Type local:ZDefArg8Bit}">
             <TextBox Text="{Binding Path=Value}" MaxLength="3" Width="40" Height="19" TextAlignment="Right" VerticalAlignment="Center" />
         </DataTemplate>
@@ -268,14 +272,32 @@
 
         <DataTemplate DataType="{x:Type local:ZDefArgSlot}">
             <Grid>
-                <Grid.Resources>
-                    <CollectionViewSource Source="{Binding Path=Slots}" x:Key="cvs">
-                        <CollectionViewSource.SortDescriptions>
-                            <scm:SortDescription />
-                        </CollectionViewSource.SortDescriptions>
-                    </CollectionViewSource>
-                </Grid.Resources>
-                <ComboBox ItemsSource="{Binding Source={StaticResource cvs}}" Width="200" SelectedValue="{Binding Value}"/>
+                <ComboBox Width="200" SelectedValue="{Binding Value}">
+                    <ComboBox.ItemTemplate>
+                        <ItemContainerTemplate>
+                            <TextBlock>
+                                <TextBlock.Text>
+                                    <MultiBinding Converter="{StaticResource SlotConverter}">
+                                        <Binding Path=".">
+                                        </Binding>
+                                        <Binding Path="SelectedMap">
+                                            <Binding.RelativeSource>
+                                                <RelativeSource AncestorType="local:ObjectProperties"/>
+                                            </Binding.RelativeSource>
+                                        </Binding>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </ItemContainerTemplate>
+                    </ComboBox.ItemTemplate>
+                    <ComboBox.ItemsSource>
+                        <Binding Path="NamedSlots">
+                            <Binding.RelativeSource>
+                                <RelativeSource AncestorType="local:ObjectProperties"/>
+                            </Binding.RelativeSource>
+                        </Binding>
+                    </ComboBox.ItemsSource>
+                </ComboBox>
             </Grid>
         </DataTemplate>
 
@@ -333,7 +355,20 @@
                               IsChecked="{Binding NamedSlot.Length, Mode=OneWay}">
                         <TextBlock Text="Enable named slot"></TextBlock>
                     </CheckBox>
-                    <TextBox x:Name="NamedSlot" Height="20" VerticalAlignment="Center" IsEnabled="{Binding IsChecked, ElementName=EnableNamedSlot}" Text="{Binding NamedSlot, Mode=TwoWay}" CharacterCasing="Upper" Margin="0,6,0,0"/>
+                    <TextBox x:Name="NamedSlot" Height="20" VerticalAlignment="Center" 
+                             IsEnabled="{Binding IsChecked, ElementName=EnableNamedSlot}"
+                             CharacterCasing="Upper" Margin="0,6,0,0">
+                        <TextBox.Text>
+                            <MultiBinding Converter="{StaticResource SlotConverter}">
+                                <Binding Path="NamedSlot"/>
+                                <Binding Path="SelectedMap">
+                                    <Binding.RelativeSource>
+                                        <RelativeSource AncestorType="local:ObjectProperties"/>
+                                    </Binding.RelativeSource>
+                                </Binding>
+                            </MultiBinding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
             </StackPanel>
         </Border>

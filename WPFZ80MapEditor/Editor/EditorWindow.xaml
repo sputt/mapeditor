@@ -22,25 +22,9 @@
                         Executed="SaveExecuted"/>
     </Window.CommandBindings>
     <DockPanel>
-        <WrapPanel x:Name="ToolbarPanel" DockPanel.Dock="Top" Height="26" Panel.ZIndex="2" Background="White">
-            <WrapPanel.Effect>
-                <DropShadowEffect Direction="270" Opacity="0.25" ShadowDepth="5" />
-            </WrapPanel.Effect>
-            <ToolBar DockPanel.Dock="top" ToolBarTray.IsLocked="True" x:Name="MainToolBar" Height="26" Panel.ZIndex="1">
-                <Button Command="ApplicationCommands.Save">
-                    <Image Source="../Toolbar/save.bmp"  OpacityMask="#A8E61D"/>
-                </Button>
-                <Button Command="ApplicationCommands.Undo">
-                    <Image Source="../Toolbar/undo.png"  OpacityMask="#A8E61D"/>
-                </Button>
-                <Button Command="ApplicationCommands.Redo">
-                    <Image Source="../Toolbar/redo.png"  OpacityMask="#A8E61D"/>
-                </Button>
-            </ToolBar>
-        </WrapPanel>
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Grid.Row="0" Margin="0,10,0,10" Visibility="{Binding Path=IsNew, RelativeSource={RelativeSource AncestorType=local:EditorWindow}, Converter={StaticResource BoolToVis}}">
             <Label>New script name:</Label>
-            <TextBox x:Name="NewScriptTextBox" Height="23" Width="160"/>
+            <TextBox x:Name="NewScriptTextBox" CharacterCasing="Upper" Height="23" Width="160"/>
         </StackPanel>
         <Grid DockPanel.Dock="Bottom" Height="35" Margin="0,0,10,0" >
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Height="23">

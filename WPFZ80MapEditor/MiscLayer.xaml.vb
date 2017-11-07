@@ -108,6 +108,7 @@
         Dim ObjOld As ZMisc = MiscItemsControl.SelectedItem
         Dim ObjClone As ZMisc = ObjOld.Clone
         Frm.DataContext = ObjClone
+        Frm.SelectedMap = Me.Map
         If Frm.ShowDialog() = True Then
             'ObjClone.UpdatePosition(ObjClone.Args(0).Value, ObjClone.Args(1).Value)
             Me.DataContext.ZMisc(MiscItemsControl.SelectedIndex) = ObjClone

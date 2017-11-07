@@ -511,7 +511,7 @@ Public Class Scenario
             For i = 0 To MapData.ZScript.Count - 1
                 ' Add on a named slot to label this script def
                 Dim ScriptInstance As ZScript = MapData.ZScript(i).Clone()
-                ScriptInstance.NamedSlot = MapPrefix & "_SCRIPT_" & (i + 1)
+                ScriptInstance.NamedSlot = ScriptInstance.Args(0).Value
                 ScriptInstance.Write(Stream, 200 + i)
             Next
 
