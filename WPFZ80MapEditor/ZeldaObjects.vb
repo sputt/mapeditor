@@ -507,9 +507,12 @@ Public Class ZDefArgSlot
     Public Sub New()
     End Sub
 
-    Public Sub New(Name As String, Description As String, Scenario As Scenario)
+    Public Sub New(Name As String, Description As String, Scenario As Scenario, Optional Properties As IDictionary(Of String, String) = Nothing)
         MyBase.New(Name, Description)
         _Scenario = Scenario
+
+        If Properties IsNot Nothing AndAlso Properties.ContainsKey("SLOT_TYPE") Then
+        End If
         Slots = Scenario.NamedSlots
     End Sub
 
@@ -744,6 +747,7 @@ Public Class ZDef
     Public Property Description As String
     Public Property Args As ArgsCollection
     Public Property DefaultImage As Integer
+    Public Property Properties As IDictionary(Of String, String)
 
     Public Property DefaultW As Byte
     Public Property DefaultH As Byte
@@ -760,10 +764,11 @@ Public Class ZDef
     Public Sub New()
     End Sub
 
-    Public Sub New(Name As String, Macro As String, Description As String, ObjType As Type)
+    Public Sub New(Name As String, Macro As String, Description As String, ObjType As Type, Properties As IDictionary(Of String, String))
         Me.Name = Name
         Me.Macro = Macro
         Me.Description = Description
+        Me.Properties = Properties
         Args = New ArgsCollection(Nothing)
 
         Dim M = ObjType.BaseType.GetMethod("FromMacro")
@@ -785,8 +790,7 @@ Public Class ZDef
         End If
     End Sub
 
-    Public Sub AddArg(Name As String, Description As String, Scenario As Scenario,
-                      Properties As Dictionary(Of String, String), Optional IsOptional As Boolean = False)
+    Public Sub AddArg(Name As String, Description As String, Scenario As Scenario, Optional IsOptional As Boolean = False)
         Dim NewArg As ZDefArg
         If Description.StartsWith("Is ") Or Description.StartsWith("Are ") Then
             NewArg = New ZDefArgBoolean(Name, Description)
@@ -809,7 +813,7 @@ Public Class ZDef
                 Case "g", "gg"
                     NewArg = New ZDefArgGenState(Name, Description)
                 Case "slot"
-                    NewArg = New ZDefArgSlot(Name, Description, Scenario)
+                    NewArg = New ZDefArgSlot(Name, Description, Scenario, Properties)
                 Case Else
                     NewArg = New ZDefArg(Name, Description)
             End Select

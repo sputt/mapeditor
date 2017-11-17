@@ -17,7 +17,6 @@ Partial Class Scenario
 
         For Each Match As Match In Matches
             Dim Groups = Match.Groups
-            Dim Def As New ZDef(Groups("Name").Value, Groups("MacroName").Value.ToUpper(), Groups("Description").Value.Trim(), InstanceType)
 
             Dim Properties As New Dictionary(Of String, String)
             For i = 0 To Groups("PropertyName").Captures.Count - 1
@@ -25,8 +24,10 @@ Partial Class Scenario
                                Groups("PropertyValue").Captures(i).Value.Trim())
             Next
 
+            Dim Def As New ZDef(Groups("Name").Value, Groups("MacroName").Value.ToUpper(), Groups("Description").Value.Trim(), InstanceType, Properties)
+
             For i = 0 To Groups("ArgName").Captures.Count - 1
-                Def.AddArg(Groups("ArgName").Captures(i).Value.ToUpper(), Groups("ArgDesc").Captures(i).Value.Trim(), Me, Properties)
+                Def.AddArg(Groups("ArgName").Captures(i).Value.ToUpper(), Groups("ArgDesc").Captures(i).Value.Trim(), Me)
             Next
 
             Dictionary.Add(Def.Macro, Def)

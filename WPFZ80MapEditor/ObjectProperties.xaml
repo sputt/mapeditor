@@ -272,7 +272,17 @@
 
         <DataTemplate DataType="{x:Type local:ZDefArgSlot}">
             <Grid>
-                <ComboBox Width="200" SelectedValue="{Binding Value}">
+                <Grid.Resources>
+                    <CollectionViewSource x:Key="NamedSlotSource"
+                                          Filter="NamedSlotSource_Filter"
+                                          Source="{Binding Path=NamedSlots, RelativeSource={RelativeSource AncestorType=local:ObjectProperties}}">
+                        <CollectionViewSource.SortDescriptions>
+                            <scm:SortDescription PropertyName="" Direction="Ascending"/>
+                        </CollectionViewSource.SortDescriptions>
+                    </CollectionViewSource>
+                </Grid.Resources>
+                <ComboBox Width="200" SelectedValue="{Binding Value}"
+                          ItemsSource="{Binding Source={StaticResource NamedSlotSource}}">
                     <ComboBox.ItemTemplate>
                         <ItemContainerTemplate>
                             <TextBlock>
@@ -290,13 +300,6 @@
                             </TextBlock>
                         </ItemContainerTemplate>
                     </ComboBox.ItemTemplate>
-                    <ComboBox.ItemsSource>
-                        <Binding Path="NamedSlots">
-                            <Binding.RelativeSource>
-                                <RelativeSource AncestorType="local:ObjectProperties"/>
-                            </Binding.RelativeSource>
-                        </Binding>
-                    </ComboBox.ItemsSource>
                 </ComboBox>
             </Grid>
         </DataTemplate>

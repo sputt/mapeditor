@@ -18,12 +18,11 @@ Public Class ObjectProperties
         End Set
     End Property
 
-    Public ReadOnly Property NamedSlots As IList(Of String)
+    Public ReadOnly Property NamedSlots As IEnumerable(Of String)
         Get
-            Return (From Obj In SelectedMap.ZAll
-                    Where Obj.NamedSlot IsNot Nothing
-                    Select Obj.NamedSlot
-                    Order By NamedSlot).ToList()
+            Return From Obj In SelectedMap.ZAll
+                   Where Obj.NamedSlot IsNot Nothing
+                   Select Obj.NamedSlot
         End Get
     End Property
 
@@ -81,6 +80,25 @@ Public Class ObjectProperties
 
     Private Sub ComboBox_DropDownOpened(sender As Object, e As EventArgs)
         _OldScriptSelection = sender.SelectedItem
+    End Sub
+
+    Private Sub CollectionViewSource_Filter(sender As Object, e As FilterEventArgs)
+
+    End Sub
+
+    Private Sub NamedSlotSource_Filter(sender As Object, e As FilterEventArgs)
+        Dim EditingObj As IBaseGeneralObject = Me.DataContext
+        If EditingObj.Definition.Properties.ContainsKey("SLOT_TYPE") Then
+            e.Accepted = SelectedMap.ZAll _
+                .Where(Function(Obj)
+                           Return Obj.NamedSlot = e.Item
+                       End Function) _
+                .Where(Function(obj)
+                           Return obj.Definition.Macro.ToUpper() = EditingObj.Definition.Properties("SLOT_TYPE").ToUpper()
+                       End Function).Any()
+        Else
+            e.Accepted = True
+        End If
     End Sub
 End Class
 

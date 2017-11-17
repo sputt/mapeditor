@@ -43,7 +43,6 @@ Public Class EditorWindow
         HighlightingManager.Manager.AddSyntaxModeFileProvider(provider)
         ScriptEditor.SetHighlighting("Zelda Script")
         ScriptEditor.ActiveTextAreaControl.HorizontalScroll.Enabled = False
-        ScriptEditor.SetHighlighting("ZScript.xshd")
 
         Dim Reader = New StreamReader(filePath)
         Dim ScriptText = Reader.ReadToEnd()
