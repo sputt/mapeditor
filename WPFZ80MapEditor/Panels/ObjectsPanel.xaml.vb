@@ -119,4 +119,22 @@
         'Dim ScriptWindow = New EditorWindow(Application.Current.MainWindow, FilePath)
         'ScriptWindow.Show()
     End Sub
+
+    Private Sub MapSpecificListbox_MouseDoubleClick(sender As Object, e As MouseButtonEventArgs)
+        Dim Script = MapSpecificListbox.SelectedItem
+        EditorWindow.OpenEditor(CType(DataContext, AppModel).SelectedMap, Script, False)
+    End Sub
+
+    Private Sub AddScriptButton_Click(sender As Object, e As RoutedEventArgs) Handles AddScriptButton.Click
+        Dim Script = MapSpecificListbox.SelectedItem
+        EditorWindow.OpenEditor(CType(DataContext, AppModel).SelectedMap, Script, True)
+    End Sub
+
+    Private Sub DeleteScriptButton_Click(sender As Object, e As RoutedEventArgs) Handles DeleteScriptButton.Click
+        Dim Script = MapSpecificListbox.SelectedItem
+        Dim Result = MsgBox("Are you sure you want to delete this script from this map?", vbApplicationModal Or vbYesNo)
+        If Result = vbYes Then
+            CType(DataContext, AppModel).SelectedMap.ZScript.Remove(Script)
+        End If
+    End Sub
 End Class

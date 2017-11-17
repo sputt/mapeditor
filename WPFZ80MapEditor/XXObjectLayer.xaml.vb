@@ -391,4 +391,29 @@ Public Class XXObjectLayer
     Private Sub UserControl_MouseDoubleClick(sender As Object, e As MouseButtonEventArgs)
         ApplicationCommands.Properties.Execute(Nothing, Me)
     End Sub
+
+    Private Sub ObjectLayer_PreviewKeyDown(sender As Object, e As KeyEventArgs) Handles ObjectLayer.PreviewKeyDown
+        Dim Offsets As Point? = Nothing
+
+        Select Case e.Key
+            Case Key.Left
+                Offsets = New Point(-1, 0)
+            Case Key.Right
+                Offsets = New Point(1, 0)
+            Case Key.Up
+                Offsets = New Point(0, -1)
+            Case Key.Down
+                Offsets = New Point(0, 1)
+        End Select
+
+        If Offsets IsNot Nothing Then
+
+            For Each Obj As IBaseGeneralObject In ObjectListBox.SelectedItems
+                Obj.Args(0).Value = Int(Obj.Args(0).Value) + Offsets.Value.X
+                Obj.Args(1).Value = Int(Obj.Args(1).Value) + Offsets.Value.Y
+            Next
+
+            e.Handled = True
+        End If
+    End Sub
 End Class

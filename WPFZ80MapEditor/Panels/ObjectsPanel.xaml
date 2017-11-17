@@ -13,7 +13,9 @@
 
     <UserControl.Resources>
         <converters:XImageConverter x:Key="ImageConverter"/>
-        
+        <converters:ZScriptToObjectDisplayConverter x:Key="ZScriptToObjectDisplayConverter"/>
+        <converters:ZScriptToIsBoundVisibilityConverter x:Key="ZScriptToIsBoundVisibilityConverter"/>
+
         <Style x:Key="BorderStyle" TargetType="Border">
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Style.Triggers>
@@ -124,16 +126,39 @@
                 <ScrollViewer Margin="0,0,0,0" VerticalScrollBarVisibility="Auto">
                     <StackPanel Orientation="Vertical">
                         <Label>Map-specific</Label>
-                        <ListBox Grid.Row="0" ItemsSource="{Binding Path=SelectedMap.ZScript}" IsTabStop="False" Padding="0,0,0,0" 
-                          Background="#FFF9F9F9">
+                        <ListBox x:Name="MapSpecificListbox" Grid.Row="0" ItemsSource="{Binding Path=SelectedMap.ZScript}" IsTabStop="False" Padding="0,0,0,0" 
+                          Background="#FFF9F9F9" MouseDoubleClick="MapSpecificListbox_MouseDoubleClick">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Center" SnapsToDevicePixels="True" MouseLeftButtonDown="Script_MouseLeftButtonDown">
-                                        <TextBlock Text="{Binding Path=Args[1].Value}" VerticalAlignment="Center" Name="TextBlock1"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Margin="0,0,5,0">
+                                            <TextBlock.Visibility>
+                                                <MultiBinding Converter="{StaticResource ZScriptToIsBoundVisibilityConverter}">
+                                                    <Binding Path="."/>
+                                                    <Binding Path="DataContext.SelectedMap.ZObjects" ElementName="MapSpecificListbox"/>
+                                                    <Binding Path="DataContext.SelectedMap.ZEnemies" ElementName="MapSpecificListbox"/>
+                                                    <Binding Path="DataContext.SelectedMap.ZMisc" ElementName="MapSpecificListbox"/>
+                                                </MultiBinding>
+                                            </TextBlock.Visibility>
+                                            ●
+                                        </TextBlock>
+                                        <TextBlock>
+                                            <TextBlock.Text>
+                                                <MultiBinding Converter="{StaticResource ZScriptToObjectDisplayConverter}">
+                                                    <Binding Path="."/>
+                                                    <Binding Path="DataContext.SelectedMap" ElementName="MapSpecificListbox"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
                                     </StackPanel>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ListBox>
+                        <TextBlock Margin="5,10,0,0">● Bound to an object</TextBlock>
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                            <Button x:Name="AddScriptButton" Width="60" Margin="0,0,15,0">Add</Button>
+                            <Button x:Name="DeleteScriptButton" Width="60">Delete</Button>
+                        </StackPanel>
                         <Label>Built-in</Label>
                         <ItemsControl Grid.Row="0" ItemsSource="{Binding Path=Scenario.BuiltinScripts.Keys}" IsTabStop="False" Padding="0,0,0,0" 
                           Background="#FFF9F9F9">

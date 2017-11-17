@@ -28,6 +28,10 @@
 			</Span>
       <MarkPrevious bold="true" italic="false" color="Blue">:</MarkPrevious>
 			<MarkPrevious bold="true" italic="false" color="MidnightBlue">(</MarkPrevious>
+      <MarkPrevious bold="true" italic="false" color="MidnightBlue">[</MarkPrevious>
+      <KeyWords name="Builtins" bold="true" italic="false" color="Black">
+        <Key word="return"/>
+      </KeyWords>
 			<KeyWords name="Punctuation" bold="false" italic="false" color="Black">
 				<Key word="?" />
 				<Key word="," />

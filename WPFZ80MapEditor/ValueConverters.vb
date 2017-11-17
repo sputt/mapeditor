@@ -1,5 +1,6 @@
 ﻿Imports SPASM
 Imports System.Windows.Media.Animation
+Imports System.Collections.ObjectModel
 
 Namespace ValueConverters
 
@@ -420,6 +421,38 @@ Namespace ValueConverters
             Else
                 Return Scenario.ScenarioName & " - " & My.Resources.ApplicationName
             End If
+        End Function
+    End Class
+
+    Public Class ZScriptToIsBoundVisibilityConverter
+        Implements IMultiValueConverter
+
+        Public Function Convert(values() As Object, targetType As Type, parameter As Object, culture As Globalization.CultureInfo) As Object Implements IMultiValueConverter.Convert
+            If TypeOf values(0) Is ZScript Then
+                Dim Script As ZScript = values(0)
+
+                Dim Objects As ObservableCollection(Of IBaseGeneralObject) = values(1)
+                Dim Enemies As ObservableCollection(Of IBaseGeneralObject) = values(2)
+                Dim Miscs As IEnumerable(Of IBaseGeneralObject) = CType(values(3), ObservableCollection(Of ZMisc)).Cast(Of IBaseGeneralObject)
+
+                Dim Result =
+                    Objects.Concat(Enemies).Concat(Miscs).Any(Function(Obj)
+                                                                  Return Obj.Args.Any(Function(Arg)
+                                                                                          Return Script.Args(0).Value = Arg.Value
+                                                                                      End Function)
+                                                              End Function)
+                If Result Then
+                    Return Visibility.Visible
+                Else
+                    Return Visibility.Collapsed
+                End If
+            Else
+                Return Visibility.Collapsed
+            End If
+        End Function
+
+        Public Function ConvertBack(value As Object, targetTypes() As Type, parameter As Object, culture As Globalization.CultureInfo) As Object() Implements IMultiValueConverter.ConvertBack
+            Return Nothing
         End Function
     End Class
 End Namespace

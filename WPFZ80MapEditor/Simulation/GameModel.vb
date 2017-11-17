@@ -269,8 +269,7 @@ Public Class GameModel
         _Asm.Defines.Add("_MAPEDITOR_STARTY", StartY)
 
         Dim Output = _Asm.Assemble()
-        'Debug.Write(_Asm.StdOut.ReadAll())
-
+        Debug.Write(_Asm.StdOut.ReadAll())
 
         _Calc.Visible = True
 
@@ -306,7 +305,6 @@ Public Class GameModel
 
         For Each Define As String In SPASMHelper.Defines
             Dim DefineKey As String = Define.ToUpper()
-            Debug.WriteLine("Processing: " & Define)
             If DefineKey Like "*_GFX?" Or DefineKey Like "*_GFX" Then
                 Dim Address As UShort = _Asm.Labels(Define.ToUpper()) And &HFFFF
                 If Not ImageMap.ContainsKey(Address) Then

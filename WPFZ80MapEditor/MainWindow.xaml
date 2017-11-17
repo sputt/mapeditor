@@ -245,7 +245,7 @@
 					<local:TilesPanel x:Name="TileSelectorPanel"/>
 				</Grid>
 
-				<Grid x:Name="ObjectSelectorGridItem" DockPanel.Dock="Right" Panel.ZIndex="2" Background="White" Width="170">
+				<Grid x:Name="ObjectSelectorGridItem" DockPanel.Dock="Right" Panel.ZIndex="2" Background="White" Width="190">
 					<Grid.Effect>
 						<DropShadowEffect Direction="180" Opacity="0.25" ShadowDepth="2" />
 					</Grid.Effect>

@@ -1,5 +1,7 @@
 ﻿Imports System.IO
+Imports System.Text.RegularExpressions
 Imports Revsoft.TextEditor.Document
+Imports WPFZ80MapEditor.ValueConverters
 
 Public Class EditorWindow
 
@@ -41,13 +43,15 @@ Public Class EditorWindow
         HighlightingManager.Manager.AddSyntaxModeFileProvider(provider)
         ScriptEditor.SetHighlighting("Zelda Script")
         ScriptEditor.ActiveTextAreaControl.HorizontalScroll.Enabled = False
+        ScriptEditor.SetHighlighting("ZScript.xshd")
 
         Dim Reader = New StreamReader(filePath)
         Dim ScriptText = Reader.ReadToEnd()
         Reader.Close()
 
         For Each Rep In Replacements
-            ScriptText = ScriptText.Replace(Rep.Key, Rep.Value)
+            Dim RegexObj As New Regex("\b" & Rep.Key & "\b")
+            ScriptText = RegexObj.Replace(ScriptText, Rep.Value)
         Next
 
         ScriptEditor.Text = ScriptText
@@ -87,7 +91,8 @@ Public Class EditorWindow
 
     Private Sub OKButton_Click(sender As System.Object, e As System.Windows.RoutedEventArgs) Handles OKButton.Click
         For Each Rep In _Replacements
-            ScriptEditor.Text = ScriptEditor.Text.Replace(Rep.Value, Rep.Key)
+            Dim RegexObj As New Regex("\b" & Rep.Value & "\b")
+            ScriptEditor.Text = RegexObj.Replace(ScriptEditor.Text, Rep.Key)
         Next
         ScriptEditor.SaveFile(EditorFilePath)
         ScriptName = NewScriptTextBox.Text
@@ -99,4 +104,56 @@ Public Class EditorWindow
     Private Sub CancelButton_Click(sender As Object, e As RoutedEventArgs) Handles CancelButton.Click
         Me.Close()
     End Sub
+
+    Public Shared Function OpenEditor(Map As MapData, Script As ZScript, IsNew As Boolean) As ZScript
+        Dim Converter As New ZScriptToObjectIDConverter()
+        Dim RandomFile = System.IO.Path.GetTempFileName() & ".zcr"
+
+        Dim Stream = New StreamWriter(RandomFile)
+        If Not IsNew Then
+            Stream.Write(Script.ScriptContents)
+        Else
+            Stream.Write(";; Edit your script here")
+        End If
+        Stream.Close()
+
+
+        Dim SlotConverter As New SlotPrefixConverter()
+
+        Dim Replacements As New Dictionary(Of String, String)
+        For Each Obj In Map.ZAll
+            If Obj.NamedSlot IsNot Nothing Then
+                Replacements(Obj.NamedSlot) = SlotConverter.Convert({Obj.NamedSlot, Map},
+                                                                    GetType(String), Nothing, Nothing)
+            End If
+        Next
+        Dim ScriptWindow = New EditorWindow(Application.Current.MainWindow, If(IsNew, "New Script", Script.Args(1).Value),
+                                            RandomFile, IsNew, Replacements)
+        Dim Result = ScriptWindow.ShowDialog()
+        If Result Then
+            Dim Reader = New StreamReader(RandomFile)
+            Dim Contents = Reader.ReadToEnd()
+            Reader.Close()
+
+            If IsNew Then
+                Dim Idx = 1
+                Do While Map.ZScript.Any(Function(Scr)
+                                             Return Scr.Args(0).Value = Map.MapPrefix & "SCRIPT_" & Idx
+                                         End Function)
+                    Idx += 1
+                Loop
+
+                Dim ScriptId = Map.MapPrefix & "SCRIPT_" & Idx
+                Script = ZScript.FromDef(Map.Scenario.ScriptDef, {ScriptId, Map.MapPrefix & ScriptWindow.ScriptName & "_SCRIPT"})
+                Script.ScriptContents = Contents
+                Map.ZScript.Add(Script)
+            Else
+                Script.ScriptContents = Contents
+            End If
+
+            Return Script
+        Else
+            Return Nothing
+        End If
+    End Function
 End Class

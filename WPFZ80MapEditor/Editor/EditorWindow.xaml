@@ -32,7 +32,7 @@
                 <Button Content="Cancel" IsCancel="True" Width="75" Margin="10,0,0,0" Name="CancelButton" />
             </StackPanel>
         </Grid>
-        <WindowsFormsHost Name="ScriptEditorHost" Panel.ZIndex="1">
+        <WindowsFormsHost Name="ScriptEditorHost" Panel.ZIndex="1" Margin="5,0,0,0">
             <local:ScriptEditor></local:ScriptEditor>
         </WindowsFormsHost>
     </DockPanel>
