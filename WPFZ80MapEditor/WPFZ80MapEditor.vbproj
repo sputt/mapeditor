@@ -183,6 +183,12 @@
     <Compile Include="Editor\ScriptEditor.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Editor\SelectorWindow.xaml.vb">
+      <DependentUpon>SelectorWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Editor\TileSelector.xaml.vb">
+      <DependentUpon>TileSelector.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Effects\InvertEffect.vb" />
     <Compile Include="Panels\TintEffect.vb" />
     <Compile Include="MainWindow.xaml.vb">
@@ -261,6 +267,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Editor\EditorWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Editor\SelectorWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Editor\TileSelector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

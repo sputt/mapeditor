@@ -1,0 +1,31 @@
+﻿<Window x:Class="SelectorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPFZ80MapEditor"
+        mc:Ignorable="d"
+        Title="Screen Selector" Height="512" Width="512" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterOwner">
+    <Grid Width="512" Height="512">
+        <Grid RenderTransformOrigin="0.5,0.5" Panel.ZIndex="1" IsHitTestVisible="False" Opacity="0.5">
+            <Grid.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleX="2" ScaleY="2"/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Grid.RenderTransform>
+            <local:XMapView></local:XMapView>
+            <local:XXObjectLayer Panel.ZIndex="4" ObjectCollection="{Binding ZObjects}" ObjectType="{x:Type local:ZObject}"/>
+            <local:XXObjectLayer Panel.ZIndex="5" ObjectCollection="{Binding ZEnemies}" ObjectType="{x:Type local:ZEnemy}"/>
+        </Grid>
+        <Canvas Width="512" Height="512" Panel.ZIndex="2">
+            <Border Name="ThumbGrid" Width="192" Height="128" BorderBrush="Green" BorderThickness="4" Background="Transparent"
+                    MouseLeftButtonDown="Misc_MouseLeftButtonDown" MouseMove="Misc_MouseMove" MouseLeftButtonUp="Misc_MouseLeftButtonUp"
+                    Canvas.Top="{Binding Y, RelativeSource={RelativeSource AncestorType=local:SelectorWindow}}"
+                    Canvas.Left="{Binding X, RelativeSource={RelativeSource AncestorType=local:SelectorWindow}}">
+            </Border>
+        </Canvas>
+    </Grid>
+</Window>

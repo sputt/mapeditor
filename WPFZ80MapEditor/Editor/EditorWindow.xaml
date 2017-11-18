@@ -19,14 +19,15 @@
                         Executed="RedoExecuted"/>
     </Window.CommandBindings>
     <DockPanel>
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Grid.Row="0" Margin="0,10,0,10" Visibility="{Binding Path=IsNew, RelativeSource={RelativeSource AncestorType=local:EditorWindow}, Converter={StaticResource BoolToVis}}">
-            <Button>Insert camera coordinates</Button>
-            <Button>Insert camera coordinates</Button>
-        </StackPanel>
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Grid.Row="0" Margin="0,10,0,10" Visibility="{Binding Path=IsNew, RelativeSource={RelativeSource AncestorType=local:EditorWindow}, Converter={StaticResource BoolToVis}}">
-            <Label>New script name:</Label>
-            <TextBox x:Name="NewScriptTextBox" CharacterCasing="Upper" Height="23" Width="160"/>
-        </StackPanel>
+        <DockPanel DockPanel.Dock="Top" Margin="0,5,5,5">
+            <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" Visibility="{Binding Path=IsNew, RelativeSource={RelativeSource AncestorType=local:EditorWindow}, Converter={StaticResource BoolToVis}}">
+                <Label>New script name:</Label>
+                <TextBox x:Name="NewScriptTextBox" CharacterCasing="Upper" Height="23" Width="160"/>
+            </StackPanel>
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="PlugCameraButton" Click="PlugCameraButton_Click" Width="154" Height="23">Insert camera coordinates</Button >
+            </StackPanel>
+        </DockPanel>
         <Grid DockPanel.Dock="Bottom" Height="35" Margin="0,0,10,0" >
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Height="23">
                 <Button Content="OK" IsDefault="true" Width="75" Name="OKButton"/>

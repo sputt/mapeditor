@@ -9,6 +9,7 @@ Public Class EditorWindow
     Private ScriptEditor As ScriptEditor
     Private _FilePath As String
     Private _Replacements As IDictionary(Of String, String)
+    Private _Map As MapData
 
     Public Property ScriptName As String
 
@@ -28,12 +29,13 @@ Public Class EditorWindow
                            New PropertyMetadata(False))
 
 
-    Public Sub New(Owner As Window, ScriptName As String, filePath As String, IsNew As Boolean, Replacements As IDictionary(Of String, String))
+    Public Sub New(Owner As Window, ScriptName As String, filePath As String, IsNew As Boolean, Replacements As IDictionary(Of String, String), Map As MapData)
         InitializeComponent()
         Me.Owner = Owner
         Me.IsNew = IsNew
         Me._FilePath = filePath
         Me._Replacements = Replacements
+        Me._Map = Map
 
         EditorFilePath = filePath
         Title = ScriptName
@@ -127,7 +129,7 @@ Public Class EditorWindow
             End If
         Next
         Dim ScriptWindow = New EditorWindow(Application.Current.MainWindow, If(IsNew, "New Script", Script.Args(1).Value),
-                                            RandomFile, IsNew, Replacements)
+                                            RandomFile, IsNew, Replacements, Map)
         Dim Result = ScriptWindow.ShowDialog()
         If Result Then
             Dim Reader = New StreamReader(RandomFile)
@@ -155,4 +157,65 @@ Public Class EditorWindow
             Return Nothing
         End If
     End Function
+
+    Function GrabTextUpToCommaOrEnd(WordList As IList(Of String), Start As Integer) As Tuple(Of String, Integer)
+        Dim Result = ""
+        While Start < WordList.Count
+            If WordList(Start) = "," Then
+                Return New Tuple(Of String, Integer)(Result, Start + 1)
+            End If
+            Result += WordList(Start)
+            Start += 1
+        End While
+        Return New Tuple(Of String, Integer)(Result, Start)
+    End Function
+
+    Private Sub PlugCameraButton_Click(sender As Object, e As RoutedEventArgs)
+
+        Dim CurLine = Me.ScriptEditor.ActiveTextAreaControl.Caret.Line
+        Dim LineText = Me.ScriptEditor.ActiveTextAreaControl.Document.GetLineSegment(CurLine)
+
+        Dim ScreenCommands = {"trigger_screen", "trigger_screen_fast", "scroll_screen"}
+        If LineText.Words.Any(Function(WordSegment)
+                                  Return ScreenCommands.Contains(WordSegment.Word)
+                              End Function) Then
+
+            Dim WordList = LineText.Words.
+                Where(Function(WordSegment)
+                          Return WordSegment.Type = TextWordType.Word
+                      End Function).
+                      Select(Function(WordSegment)
+                                 Return WordSegment.Word
+                             End Function).ToList()
+
+            Dim Idx = -1
+            Dim j = 0
+            While Idx = -1 And j < ScreenCommands.Length
+                Idx = WordList.IndexOf(ScreenCommands(j))
+                j += 1
+            End While
+            Dim ScreenCommand = WordList(Idx)
+
+            Dim Result = GrabTextUpToCommaOrEnd(WordList, Idx + 2)
+            Idx = Result.Item2
+            Dim X = SPASMHelper.Eval(Result.Item1)
+
+            Result = GrabTextUpToCommaOrEnd(WordList, Idx)
+            Idx = Result.Item2
+            Dim Y = SPASMHelper.Eval(Result.Item1)
+
+            Dim Selector As New SelectorWindow()
+            Selector.DataContext = Me._Map
+            Selector.X = X * 2
+            Selector.Y = Y * 2
+            Selector.Owner = Me
+            Selector.ShowDialog()
+
+            Dim Doc = Me.ScriptEditor.ActiveTextAreaControl.Document
+            Doc.Replace(LineText.Offset, LineText.Length,
+                        "  " & ScreenCommand & "(" & CInt(Selector.X / 2) & ", " & CInt(Selector.Y / 2) & ", " & GrabTextUpToCommaOrEnd(WordList, Idx).Item1)
+        End If
+
+
+    End Sub
 End Class
