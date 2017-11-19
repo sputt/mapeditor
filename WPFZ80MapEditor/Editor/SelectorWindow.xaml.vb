@@ -60,4 +60,13 @@
             e.Handled = True
         End If
     End Sub
+
+    Private Sub OKButton_Click(sender As System.Object, e As System.Windows.RoutedEventArgs) Handles OKButton.Click
+        Me.DialogResult = True
+        Me.Close()
+    End Sub
+
+    Private Sub CancelButton_Click(sender As Object, e As RoutedEventArgs) Handles CancelButton.Click
+        Me.Close()
+    End Sub
 End Class

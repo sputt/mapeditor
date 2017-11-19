@@ -4,6 +4,9 @@ Public Class TilegroupLayer
     Inherits MapLayer
     Implements IMapLayer
 
+    Public Event PreviewSelectionChanged(sender As Object)
+    Public Event SelectionChanged(sender As Object)
+
     ''' <summary>
     ''' Whether or not the selection is floating.  When floating, the delete key will simply remove the selection without applying.
     ''' When not floating, the delete key will fill the selection with the selected tile
@@ -27,6 +30,8 @@ Public Class TilegroupLayer
     Public Sub New()
         InitializeComponent()
     End Sub
+
+    Public Property AllowMultiselect As Boolean = True
 
     Public Overrides Sub DeselectAll()
         TilegroupSelection = Nothing
@@ -135,6 +140,7 @@ Public Class TilegroupLayer
     End Function
 
     Protected Sub SelectObjectsInRect(SelRect As Rect)
+        RaiseEvent PreviewSelectionChanged(Me)
         Dim Entries As New List(Of TilegroupEntry)
 
         For Y As Double = Math.Floor(SelRect.Top / 16.0) To Math.Ceiling(SelRect.Bottom / 16.0) - 1
@@ -156,6 +162,7 @@ Public Class TilegroupLayer
 
         Floating = False
         TilegroupSelection = New TilegroupSelection(Map.Tileset, Result.ToList())
+        RaiseEvent SelectionChanged(Me)
     End Sub
 #End Region
 
@@ -169,7 +176,7 @@ Public Class TilegroupLayer
         End If
 
         _StartGroupDrag = Mouse.GetPosition(sender)
-
+        Debug.WriteLine(_StartGroupDrag)
         If sender.CaptureMouse() Then
             UndoManager.PushUndoState(Map, UndoManager.TypeFlags.Anims)
 
@@ -220,6 +227,7 @@ Public Class TilegroupLayer
 
         If IndexOffset <> 0 Then
             TilegroupSelection = New TilegroupSelection(Map.Tileset, Entries)
+            RaiseEvent SelectionChanged(Me)
         End If
     End Sub
 
@@ -228,7 +236,7 @@ Public Class TilegroupLayer
         If Mouse.Captured Is sender Then
             Dim Pos = Mouse.GetPosition(sender)
             Debug.Print(TilegroupSelection.MapOffset.X)
-            Pos.X = Math.Min(255, Math.Max(-TilegroupSelection.Bounds.X, Pos.X))
+            'Pos.X = Math.Min(255, Math.Max(-TilegroupSelection.Bounds.X, Pos.X))
 
             Dim Diff As Point = Pos - _StartGroupDrag
             Dim Dx = Math.Round(Diff.X / 16.0)
@@ -253,15 +261,18 @@ Public Class TilegroupLayer
         End If
     End Sub
 
+    Public Sub DeleteFloatingSelection()
+        For i = 0 To 255
+            Map.TileData(i) = _TileDataBackup(i)
+        Next
+        TilegroupSelection = Nothing
+    End Sub
 
     Private Sub TilegroupLayer_KeyDown_1(sender As Object, evt As KeyEventArgs)
         If evt.Key = Key.Delete AndAlso TilegroupSelection IsNot Nothing Then
             UndoManager.PushUndoState(Map, 0)
             If Floating Then
-                For i = 0 To 255
-                    Map.TileData(i) = _TileDataBackup(i)
-                Next
-                TilegroupSelection = Nothing
+                DeleteFloatingSelection()
             Else
                 If SourceTile IsNot Nothing AndAlso SourceTile.Type = TileSelection.SelectionType.Tile Then
                     TilegroupSelection.TilegroupEntries.ToList().ForEach(
@@ -301,8 +312,7 @@ Public Class TilegroupLayer
         Return Clipboard.ContainsData(GetType(TilegroupSelection).FullName)
     End Function
 
-    Public Overrides Sub Paste()
-        Dim Data As TilegroupSelection = Clipboard.GetData(GetType(TilegroupSelection).FullName)
+    Public Sub FloatSelection(Data As TilegroupSelection)
         Data.Tileset = Map.Tileset
         Data.RecalculateVertices()
         Floating = True
@@ -311,5 +321,10 @@ Public Class TilegroupLayer
         _TileDataBackup.Clear()
         _TileDataBackup.AddRange(Map.TileData)
         ApplyTilegroupSelection(0)
+    End Sub
+
+    Public Overrides Sub Paste()
+        Dim Data As TilegroupSelection = Clipboard.GetData(GetType(TilegroupSelection).FullName)
+        FloatSelection(Data)
     End Sub
 End Class

@@ -5,6 +5,8 @@ Imports System.Linq
 Public Class TilesPanel
     Friend Shared Model As AppModel
 
+    Public Property Embedded As Boolean = False
+
     Public Sub New()
         InitializeComponent()
         AddHandler DataContextChanged, AddressOf OnDataContextChanged

@@ -189,6 +189,7 @@
     <Compile Include="Editor\TileSelector.xaml.vb">
       <DependentUpon>TileSelector.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Editor\TileSelectorModel.vb" />
     <Compile Include="Effects\InvertEffect.vb" />
     <Compile Include="Panels\TintEffect.vb" />
     <Compile Include="MainWindow.xaml.vb">

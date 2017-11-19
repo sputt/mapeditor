@@ -9,13 +9,15 @@
              xmlns:local="clr-namespace:WPFZ80MapEditor"
              xmlns:converters="clr-namespace:WPFZ80MapEditor.ValueConverters"
              mc:Ignorable="d" 
-             d:DesignHeight="429" d:DesignWidth="165" xmlns:my="clr-namespace:WPFZ80MapEditor">
+             d:DesignHeight="429" d:DesignWidth="165">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../ColorsAndStoryboards.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            
+
+            <BooleanToVisibilityConverter x:Key="VisConverter"/>
+
             <s:Double x:Key="TilesZoomLevel">24.0</s:Double>
             <Color x:Key="InactiveTilesColor">Transparent</Color>
             <local:TileSelectionConverter x:Key="TileSelectionConverter"/>
@@ -25,7 +27,7 @@
     </UserControl.Resources>
     
     <DockPanel>
-        <StackPanel Orientation="Vertical" DockPanel.Dock="Top" Margin="0,5" VerticalAlignment="Top">
+        <StackPanel Orientation="Vertical" DockPanel.Dock="Top" Margin="0,5" VerticalAlignment="Top" Visibility="{Binding Embedded,Converter={StaticResource VisConverter}, RelativeSource={RelativeSource AncestorType=local:TilesPanel}}">
             <DockPanel>
                 <Label DockPanel.Dock="Left">_Tileset:</Label>
                 <ComboBox Name="CurrentTileset" ItemsSource="{Binding Scenario.Tilesets}" DisplayMemberPath="Name" Width="88" Height="23" SelectedItem="{Binding SelectedMap.Tileset, Mode=TwoWay}"/>
@@ -121,7 +123,7 @@
                     </ListBox>
                 </Border>
             </TabItem>
-            <TabItem Header="Animated Tiles" Name="AnimatedTilesTab">
+            <TabItem Header="Animated Tiles" Name="AnimatedTilesTab" Visibility="{Binding Embedded,Converter={StaticResource VisConverter}, RelativeSource={RelativeSource AncestorType=local:TilesPanel}}">
                 <Grid>
                     <ListBox ItemsSource="{Binding Path=Scenario.AnimDefs.Values}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" BorderThickness="0" SelectedItem="{Binding SelectedTile, Mode=TwoWay, Converter={StaticResource AnimatedTileSelectionConverter}}">
                         <ItemsControl.ItemsPanel>

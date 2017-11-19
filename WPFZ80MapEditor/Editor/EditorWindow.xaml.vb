@@ -44,7 +44,6 @@ Public Class EditorWindow
         Dim provider = New FileSyntaxModeProvider(IO.Path.Combine(IO.Directory.GetCurrentDirectory(), "Editor"))
         HighlightingManager.Manager.AddSyntaxModeFileProvider(provider)
         ScriptEditor.SetHighlighting("Zelda Script")
-        ScriptEditor.ActiveTextAreaControl.HorizontalScroll.Enabled = False
 
         Dim Reader = New StreamReader(filePath)
         Dim ScriptText = Reader.ReadToEnd()
@@ -56,8 +55,8 @@ Public Class EditorWindow
         Next
 
         ScriptEditor.Text = ScriptText
-
-        'ScriptEditor.LoadFile(filePath)
+        ScriptEditor.ActiveTextAreaControl.HorizontalScroll.Enabled = False
+        ScriptEditor.ActiveTextAreaControl.HorizontalScroll.Visible = False
     End Sub
 
     Private Sub SaveCanExecute(sender As Object, e As CanExecuteRoutedEventArgs)
@@ -209,13 +208,82 @@ Public Class EditorWindow
             Selector.X = X * 2
             Selector.Y = Y * 2
             Selector.Owner = Me
-            Selector.ShowDialog()
+            Dim SelectResult = Selector.ShowDialog()
 
-            Dim Doc = Me.ScriptEditor.ActiveTextAreaControl.Document
-            Doc.Replace(LineText.Offset, LineText.Length,
+            If SelectResult Then
+                Dim Doc = Me.ScriptEditor.ActiveTextAreaControl.Document
+                Doc.Replace(LineText.Offset, LineText.Length,
                         "  " & ScreenCommand & "(" & CInt(Selector.X / 2) & ", " & CInt(Selector.Y / 2) & ", " & GrabTextUpToCommaOrEnd(WordList, Idx).Item1)
+            End If
         End If
+    End Sub
 
+    Private Sub PlugTileButton_Click(sender As Object, e As RoutedEventArgs)
+        Dim CurLine = Me.ScriptEditor.ActiveTextAreaControl.Caret.Line
+        Dim LineText = Me.ScriptEditor.ActiveTextAreaControl.Document.GetLineSegment(CurLine)
 
+        Dim TileCommands = {"change_tile", "prevent_tile", "change_prevent_tile"}
+        If LineText.Words.Any(Function(WordSegment)
+                                  Return TileCommands.Contains(WordSegment.Word)
+                              End Function) Then
+
+            Dim WordList = LineText.Words.
+                Where(Function(WordSegment)
+                          Return WordSegment.Type = TextWordType.Word
+                      End Function).
+                      Select(Function(WordSegment)
+                                 Return WordSegment.Word
+                             End Function).ToList()
+
+            Dim Idx = -1
+            Dim j = 0
+            While Idx = -1 And j < TileCommands.Length
+                Idx = WordList.IndexOf(TileCommands(j))
+                j += 1
+            End While
+            Dim TileCommand = WordList(Idx)
+
+            Dim Result = GrabTextUpToCommaOrEnd(WordList, Idx + 2)
+            Idx = Result.Item2
+            Dim X = SPASMHelper.Eval(Result.Item1)
+
+            Result = GrabTextUpToCommaOrEnd(WordList, Idx)
+            Idx = Result.Item2
+            Dim Y = SPASMHelper.Eval(Result.Item1)
+
+            Result = GrabTextUpToCommaOrEnd(WordList, Idx)
+            Idx = Result.Item2
+            Dim Tile = SPASMHelper.Eval(Result.Item1)
+
+            Dim Selector As New TileSelector()
+            Dim TileModel As New TileSelectorModel
+
+            Dim Offset = CInt(Math.Floor(X / 16)) + Y
+
+            Dim Entry = New TilegroupEntry(Offset, Tile)
+            TileModel.StartingTileChange = New TilegroupSelection(Me._Map.Tileset, {Entry})
+
+            TileModel.BackupTile = Me._Map.TileData(Offset)
+            TileModel.SelectedMap = Me._Map.Clone()
+            TileModel.SelectedTileset = Me._Map.Tileset
+            TileModel.SelectedTile = New TileSelection(Me._Map.Tileset, Me._Map.TileData(Offset))
+            TileModel.Scenario = Me._Map.Scenario
+            Selector.DataContext = TileModel
+            Selector.Owner = Me
+
+            Dim SelectResult = Selector.ShowDialog()
+            If SelectResult Then
+                For i = 0 To 255
+                    If Me._Map.TileData(i) <> TileModel.SelectedMap.TileData(i) Then
+                        Dim NewX = (i Mod 16) * 16
+                        Dim NewY = Math.Floor(i / 16) * 16
+
+                        Dim Doc = Me.ScriptEditor.ActiveTextAreaControl.Document
+                        Doc.Replace(LineText.Offset, LineText.Length,
+                                "  " & TileCommand & "(" & CInt(NewX) & ", " & CInt(NewY) & ", " & TileModel.SelectedMap.TileData(i) & ");")
+                    End If
+                Next
+            End If
+        End If
     End Sub
 End Class

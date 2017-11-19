@@ -320,6 +320,8 @@ Namespace ValueConverters
 
         Public Function Convert(values() As Object, targetType As Type, parameter As Object, culture As Globalization.CultureInfo) As Object Implements IMultiValueConverter.Convert
             Me.Map = values(1)
+            If Not Me.Map.Exists Then Return Nothing
+
             If TypeOf values(0) Is ZScript Then
                 Dim Script As ZScript = values(0)
                 Return Script.Args(1).Value.Replace(Map.MapPrefix, "").Replace("_SCRIPT", "")

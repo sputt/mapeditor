@@ -25,6 +25,7 @@
                 <TextBox x:Name="NewScriptTextBox" CharacterCasing="Upper" Height="23" Width="160"/>
             </StackPanel>
             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="PlugTileButton" Click="PlugTileButton_Click" Width="100" Margin="0,0,10,0" Height="23">Insert map file</Button >
                 <Button x:Name="PlugCameraButton" Click="PlugCameraButton_Click" Width="154" Height="23">Insert camera coordinates</Button >
             </StackPanel>
         </DockPanel>

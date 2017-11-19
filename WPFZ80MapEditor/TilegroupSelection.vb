@@ -58,6 +58,7 @@ Public Class TilegroupSelection
 
         _MapOffset = New Point(MinX, MinY)
 
+        _Vertices.Clear()
         _Vertices.AddRange(RawVertices.Select(Function(v)
                                                   v.Offset(-MinX, -MinY)
                                                   Return v
