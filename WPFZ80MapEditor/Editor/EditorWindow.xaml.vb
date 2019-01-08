@@ -127,6 +127,10 @@ Public Class EditorWindow
                                                                     GetType(String), Nothing, Nothing)
             End If
         Next
+
+        For Each Scr In Map.ZScript
+            Replacements(Scr.Args(1).Value) = SlotConverter.Convert({Scr.Args(1).Value, Map}, GetType(String), Nothing, Nothing)
+        Next
         Dim ScriptWindow = New EditorWindow(Application.Current.MainWindow, If(IsNew, "New Script", Script.Args(1).Value),
                                             RandomFile, IsNew, Replacements, Map)
         Dim Result = ScriptWindow.ShowDialog()
@@ -174,7 +178,7 @@ Public Class EditorWindow
         Dim CurLine = Me.ScriptEditor.ActiveTextAreaControl.Caret.Line
         Dim LineText = Me.ScriptEditor.ActiveTextAreaControl.Document.GetLineSegment(CurLine)
 
-        Dim ScreenCommands = {"trigger_screen", "trigger_screen_fast", "scroll_screen"}
+        Dim ScreenCommands = {"trigger_screen", "trigger_screen_fast", "scroll_screen", "move_screen"}
         If LineText.Words.Any(Function(WordSegment)
                                   Return ScreenCommands.Contains(WordSegment.Word)
                               End Function) Then

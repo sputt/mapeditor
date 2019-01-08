@@ -18,13 +18,20 @@ Partial Class Scenario
         For Each Match As Match In Matches
             Dim Groups = Match.Groups
 
-            Dim Properties As New Dictionary(Of String, String)
+            Dim Properties As New Dictionary(Of String, Object)
             For i = 0 To Groups("PropertyName").Captures.Count - 1
+                Dim PropVal As Object = Groups("PropertyValue").Captures(i).Value
+                If PropVal.Contains(",") Then
+                    Dim List As IEnumerable(Of String) = PropVal.Split(",")
+                    PropVal = List.Select(Of String)(Function(s) s.Trim())
+                End If
                 Properties.Add(Groups("PropertyName").Captures(i).Value.ToUpper(),
-                               Groups("PropertyValue").Captures(i).Value.Trim())
+                               PropVal)
             Next
 
-            Dim Def As New ZDef(Groups("Name").Value, Groups("MacroName").Value.ToUpper(), Groups("Description").Value.Trim(), InstanceType, Properties)
+            Dim Def As New ZDef(Groups("Name").Value,
+                                Groups("MacroName").Value.ToUpper(),
+                                Groups("Description").Value.Trim(), InstanceType, Properties)
 
             For i = 0 To Groups("ArgName").Captures.Count - 1
                 Def.AddArg(Groups("ArgName").Captures(i).Value.ToUpper(), Groups("ArgDesc").Captures(i).Value.Trim(), Me)

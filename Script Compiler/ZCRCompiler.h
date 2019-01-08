@@ -10,12 +10,12 @@ void read_code(const char *filename);
 std::string run_compile(const std::string& name, const std::string& filename);
 #pragma managed(pop)
 
-namespace ScriptCompiler {
+namespace CScriptCompiler {
 
 	__declspec(dllexport) public ref class ZCRCompiler {
 	public:
 		ZCRCompiler(String ^zeldaPath) {
-			std::string engine_path = msclr::interop::marshal_as<std::string>(zeldaPath + "\\scriptengine.asm");
+			std::string engine_path = msclr::interop::marshal_as<std::string>(zeldaPath + "\\scriptengine-new.asm");
 			read_commands(engine_path.c_str());
 		}
 

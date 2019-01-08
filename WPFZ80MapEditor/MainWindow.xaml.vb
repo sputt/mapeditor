@@ -25,7 +25,7 @@ Public Class MainWindow
         ObjectsPanel.DragScope = MapControl
 
         If MapEditorControl.ZeldaFolder IsNot Nothing Then
-            Dim fileName = Path.Combine(MapEditorControl.ZeldaFolder, "maps\hill.zmap")
+            Dim fileName = Path.Combine(MapEditorControl.ZeldaFolder, "maps\pete.zmap")
             MapControl.OpenScenario(fileName)
         End If
 

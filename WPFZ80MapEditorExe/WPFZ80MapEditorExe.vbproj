@@ -9,12 +9,13 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>WPFZ80MapEditorExe</RootNamespace>
     <AssemblyName>WPFZ80MapEditorExe</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <MyType>Custom</MyType>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -159,9 +160,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Script Compiler\Script Compiler.vcxproj">
-      <Project>{f7542ab4-0099-43ba-a955-bc07f57987b3}</Project>
-      <Name>Script Compiler</Name>
+    <ProjectReference Include="..\VB Zelda Script Compiler\VB Zelda Script Compiler.vbproj">
+      <Project>{8fdfd321-c6c3-4fae-a105-8fe633d397b6}</Project>
+      <Name>VB Zelda Script Compiler</Name>
     </ProjectReference>
     <ProjectReference Include="..\WPFZ80MapEditor\WPFZ80MapEditor.vbproj">
       <Project>{3b403a9f-d296-41ed-8863-5f2e223a1e90}</Project>

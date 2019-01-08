@@ -393,10 +393,11 @@ Public Class ZBaseObject(Of ZBase As New, Base As {New, IGeneralObject(Of ZBase)
     End Sub
 
     Public Function Clone() As Object Implements ICloneable.Clone
-        Dim Copy As New Base
-        Copy.IsInitializating = True
-        Copy.Name = _Name
-        Copy.Definition = Definition
+        Dim Copy As New Base With {
+            .IsInitializating = True,
+            .Name = _Name,
+            .Definition = Definition
+        }
         Copy.Args = New ArgsCollection(Copy)
         Args.ToList().ForEach(Sub(a) Copy.Args.Add(a.Clone))
 
@@ -475,8 +476,9 @@ Public Class ZDefArgGenState
     End Sub
 
     Public Overrides Function Clone() As Object
-        Dim Copy As New ZDefArgGenState(Name, Description)
-        Copy.Value = Value
+        Dim Copy As New ZDefArgGenState(Name, Description) With {
+            .Value = Value
+        }
         Return Copy
     End Function
 End Class
@@ -492,8 +494,9 @@ Public Class ZDefArgBoolean
     End Sub
 
     Public Overrides Function Clone() As Object
-        Dim Copy As New ZDefArgBoolean(Name, Description)
-        Copy.Value = Value
+        Dim Copy As New ZDefArgBoolean(Name, Description) With {
+            .Value = Value
+        }
         Return Copy
     End Function
 End Class
@@ -501,25 +504,24 @@ End Class
 Public Class ZDefArgSlot
     Inherits ZDefArg
 
-    Private _Scenario As Scenario
+    Private ReadOnly _Scenario As Scenario
     Public Property Slots As ICollection(Of String)
 
     Public Sub New()
     End Sub
 
-    Public Sub New(Name As String, Description As String, Scenario As Scenario, Optional Properties As IDictionary(Of String, String) = Nothing)
+    Public Sub New(Name As String, Description As String, Scenario As Scenario, Optional Properties As IDictionary(Of String, Object) = Nothing)
         MyBase.New(Name, Description)
         _Scenario = Scenario
 
-        If Properties IsNot Nothing AndAlso Properties.ContainsKey("SLOT_TYPE") Then
-        End If
         Slots = Scenario.NamedSlots
     End Sub
 
     Public Overrides Function Clone() As Object
-        Dim Copy As New ZDefArgSlot(Name, Description, _Scenario)
-        Copy.Value = Value
-        Copy.Slots = Slots
+        Dim Copy As New ZDefArgSlot(Name, Description, _Scenario) With {
+            .Value = Value,
+            .Slots = Slots
+        }
         Return Copy
     End Function
 End Class
@@ -539,9 +541,10 @@ Public Class ZDefArgGraphic
     End Sub
 
     Public Overrides Function Clone() As Object
-        Dim Copy As New ZDefArgGraphic(Name, Description, Graphics)
-        Copy.Value = Value
-        Copy.Graphics = Graphics
+        Dim Copy As New ZDefArgGraphic(Name, Description, Graphics) With {
+            .Value = Value,
+            .Graphics = Graphics
+        }
         Return Copy
     End Function
 End Class
@@ -554,7 +557,7 @@ Public Class ZDefArgObjectID
     Public Property ObjectIDs As IEnumerable(Of String)
     Public Property Scripts As IEnumerable(Of KeyValuePair(Of String, String))
 
-    Public Sub New(Name As String, Description As String, Properties As Dictionary(Of String, String))
+    Public Sub New(Name As String, Description As String, Properties As IDictionary(Of String, Object))
         MyBase.New(Name, Description, Properties)
         Dim ObjectIDs As New List(Of String)
 
@@ -570,9 +573,10 @@ Public Class ZDefArgObjectID
     End Sub
 
     Public Overrides Function Clone() As Object
-        Dim Copy As New ZDefArgObjectID(Name, Description, Properties)
-        Copy.Value = Value
-        Copy.ObjectIDs = ObjectIDs
+        Dim Copy As New ZDefArgObjectID(Name, Description, Properties) With {
+            .Value = Value,
+            .ObjectIDs = ObjectIDs
+        }
         Return Copy
     End Function
 End Class
@@ -591,9 +595,10 @@ Public Class ZDefArgObjectScript
     End Sub
 
     Public Overrides Function Clone() As Object
-        Dim Copy As New ZDefArgObjectScript(Name, Description, Scripts)
-        Copy.Value = Value
-        Copy.Scripts = Scripts
+        Dim Copy As New ZDefArgObjectScript(Name, Description, Scripts) With {
+            .Value = Value,
+            .Scripts = Scripts
+        }
         Return Copy
     End Function
 End Class
@@ -610,8 +615,9 @@ Public Class ZDefArgObjectFlags
     End Sub
 
     Public Overrides Function Clone() As Object
-        Dim Copy As New ZDefArgObjectFlags(Name, Description)
-        Copy.Value = Value
+        Dim Copy As New ZDefArgObjectFlags(Name, Description) With {
+            .Value = Value
+        }
         Return Copy
     End Function
 End Class
@@ -636,8 +642,9 @@ Public Class ZDefArgEnemyFlags
     End Sub
 
     Public Overrides Function Clone() As Object
-        Dim Copy As New ZDefArgEnemyFlags(Name, Description)
-        Copy.Value = Value
+        Dim Copy As New ZDefArgEnemyFlags(Name, Description) With {
+            .Value = Value
+        }
         Return Copy
     End Function
 End Class
@@ -653,8 +660,9 @@ Public Class ZDefArg8Bit
     End Sub
 
     Public Overrides Function Clone() As Object
-        Dim Copy As New ZDefArg8Bit(Name, Description)
-        Copy.Value = Value
+        Dim Copy As New ZDefArg8Bit(Name, Description) With {
+            .Value = Value
+        }
         Return Copy
     End Function
 End Class
@@ -670,8 +678,9 @@ Public Class ZDefArg16Bit
     End Sub
 
     Public Overrides Function Clone() As Object
-        Dim Copy As New ZDefArg16Bit(Name, Description)
-        Copy.Value = Value
+        Dim Copy As New ZDefArg16Bit(Name, Description) With {
+            .Value = Value
+        }
         Return Copy
     End Function
 End Class
@@ -687,7 +696,7 @@ Public Class ZDefArg
     Public Property Description As String
 
     Public Property ArgIndex As Integer
-    Public Property Properties As Dictionary(Of String, String)
+    Public Property Properties As IDictionary(Of String, Object)
 
     Public ReadOnly Property LabelText
         Get
@@ -712,7 +721,7 @@ Public Class ZDefArg
         End Set
     End Property
 
-    Public Sub New(Name As String, Description As String, Optional Properties As Dictionary(Of String, String) = Nothing)
+    Public Sub New(Name As String, Description As String, Optional Properties As IDictionary(Of String, Object) = Nothing)
         Me.Name = Name
         Me.Description = Description
         Me.Properties = Properties
@@ -722,9 +731,10 @@ Public Class ZDefArg
     End Sub
 
     Public Overridable Function Clone() As Object Implements System.ICloneable.Clone
-        Dim Copy As New ZDefArg(Name, Description)
-        Copy.Base = Base
-        Copy.Value = Value
+        Dim Copy As New ZDefArg(Name, Description) With {
+            .Base = Base,
+            .Value = Value
+        }
         Return Copy
     End Function
 End Class
@@ -747,7 +757,7 @@ Public Class ZDef
     Public Property Description As String
     Public Property Args As ArgsCollection
     Public Property DefaultImage As Integer
-    Public Property Properties As IDictionary(Of String, String)
+    Public Property Properties As IDictionary(Of String, Object)
 
     Public Property DefaultW As Byte
     Public Property DefaultH As Byte
@@ -764,7 +774,7 @@ Public Class ZDef
     Public Sub New()
     End Sub
 
-    Public Sub New(Name As String, Macro As String, Description As String, ObjType As Type, Properties As IDictionary(Of String, String))
+    Public Sub New(Name As String, Macro As String, Description As String, ObjType As Type, Properties As IDictionary(Of String, Object))
         Me.Name = Name
         Me.Macro = Macro
         Me.Description = Description
@@ -774,8 +784,9 @@ Public Class ZDef
         Dim M = ObjType.BaseType.GetMethod("FromMacro")
 
         If ObjType <> GetType(ZMisc) Then
-            Dim Defs As New Dictionary(Of String, ZDef)
-            Defs.Add(Macro, Me)
+            Dim Defs As New Dictionary(Of String, ZDef) From {
+                {Macro, Me}
+            }
             Dim ObjectInstance = M.Invoke(Nothing, {Defs, Macro & "(0, 0)"})
 
             DefaultImage = ObjectInstance.Image

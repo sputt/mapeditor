@@ -339,6 +339,7 @@ Namespace ValueConverters
         Implements IMultiValueConverter
 
         Dim Map As MapData
+        Dim IsScript As Boolean
 
         Public Function Convert(values() As Object, targetType As Type, parameter As Object, culture As Globalization.CultureInfo) As Object Implements IMultiValueConverter.Convert
             Me.Map = values(1)
@@ -346,7 +347,7 @@ Namespace ValueConverters
             If Slot Is Nothing Then
                 Return Nothing
             End If
-            Return Slot.Replace(Map.MapPrefix, "").Replace("_SLOT", "")
+            Return Slot.Replace(Map.MapPrefix, "").Replace("_SLOT", "").Replace("_SCRIPT", "")
         End Function
 
         Public Function ConvertBack(value As Object, targetTypes() As Type, parameter As Object, culture As Globalization.CultureInfo) As Object() Implements IMultiValueConverter.ConvertBack

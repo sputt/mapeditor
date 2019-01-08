@@ -90,12 +90,19 @@ Public Class ObjectProperties
         Dim EditingObj As IBaseGeneralObject = Me.DataContext
         If EditingObj.Definition.Properties.ContainsKey("SLOT_TYPE") Then
             e.Accepted = SelectedMap.ZAll _
-                .Where(Function(Obj)
-                           Return Obj.NamedSlot = e.Item
-                       End Function) _
-                .Where(Function(obj)
-                           Return obj.Definition.Macro.ToUpper() = EditingObj.Definition.Properties("SLOT_TYPE").ToUpper()
-                       End Function).Any()
+            .Where(Function(obj)
+                       Dim SlotTypeOrTypes = EditingObj.Definition.Properties("SLOT_TYPE")
+                       If TypeOf SlotTypeOrTypes Is String Then
+                           Return obj.Definition.Macro.ToUpper() = SlotTypeOrTypes.ToUpper()
+                       Else
+                           For Each SlotType In SlotTypeOrTypes
+                               If obj.Definition.Macro.ToUpper() = SlotType.ToUpper() Then
+                                   Return True
+                               End If
+                           Next
+                       End If
+                       Return False
+                   End Function).Any()
         Else
             e.Accepted = True
         End If

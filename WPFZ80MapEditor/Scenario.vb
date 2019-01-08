@@ -95,7 +95,7 @@ Public Class Scenario
         Public FileName As String
         Public Collection As Object
         Public Type As Type
-        Sub New(FileName, Collection, Type)
+        Sub New(FileName As String, Collection As IDictionary(Of String, ZDef), Type As Type)
             Me.FileName = FileName
             Me.Collection = Collection
             Me.Type = Type
@@ -532,6 +532,11 @@ Public Class Scenario
 
                 Stream.WriteLine(Compiler.Compile(Script.Args(1).Value, Script.ScriptContents))
                 Stream.WriteLine("")
+                'Stream.WriteLine("")
+
+                'Dim CScriptCompiler As New CScriptCompiler.ZCRCompiler(MapEditorControl.ZeldaFolder)
+                'Stream.WriteLine(CScriptCompiler.Compile(Script.Args(1).Value, Script.ScriptContents))
+                'Stream.WriteLine("")
             Next
 
             Stream.WriteLine("#endif")

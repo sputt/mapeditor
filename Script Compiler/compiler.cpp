@@ -172,6 +172,10 @@ void read_commands(std::string filename) {
 		exit(1);
 	}
 
+	// Skip to the script table
+	while (fgets(buffer, sizeof(buffer), scriptfile) && strstr(buffer, "script_table:") == NULL) {
+	}
+
 	i = 0;
 	while (fgets(buffer, sizeof(buffer), scriptfile)) {
 
@@ -185,7 +189,14 @@ void read_commands(std::string filename) {
 
 			if (ptr[0] != ';') {
 				//handle command list
-				strcpy(commands[i], ptr + 4);
+				const char *last_comma = strrchr(buffer, ',');
+				if (last_comma == NULL) {
+					const char *last_space = strrchr(buffer, ' ');
+					strcpy(commands[i], last_space + 1);
+				}
+				else {
+					strcpy(commands[i], last_comma + 2);
+				}
 			}
 			else {
 				//handle argument definitions

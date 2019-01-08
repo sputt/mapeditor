@@ -70,7 +70,7 @@ Public Class MapView
 
             For i = 0 To Map.TileData.Count - 1
                 Dim TileIndex = Map.TileData(i) Mod 128
-                If Map.TileData(i) > 128 Then
+                If Map.TileData(i) >= 128 Then
                     Dim Bounds As New Rect(16 * (i Mod 16), 16 * (Math.Floor(i / 16)), 16, 16)
                     DrawingContext.DrawRectangle(Brush, Pen, Bounds)
                 End If
