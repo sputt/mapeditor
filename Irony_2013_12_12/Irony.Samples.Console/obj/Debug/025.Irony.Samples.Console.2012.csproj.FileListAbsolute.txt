@@ -1,0 +1,12 @@
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\Irony_2013_12_12\Irony.Samples.Console\bin\Debug\Irony.Samples.Console.exe.config
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\Irony_2013_12_12\Irony.Samples.Console\bin\Debug\Irony.Samples.Console.exe
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\Irony_2013_12_12\Irony.Samples.Console\bin\Debug\Irony.Samples.Console.pdb
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\Irony_2013_12_12\Irony.Samples.Console\bin\Debug\Irony.dll
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\Irony_2013_12_12\Irony.Samples.Console\bin\Debug\Irony.Interpreter.dll
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\Irony_2013_12_12\Irony.Samples.Console\bin\Debug\Irony.Samples.dll
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\Irony_2013_12_12\Irony.Samples.Console\bin\Debug\Irony.Interpreter.pdb
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\Irony_2013_12_12\Irony.Samples.Console\bin\Debug\Irony.Samples.pdb
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\Irony_2013_12_12\Irony.Samples.Console\bin\Debug\Irony.pdb
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\Irony_2013_12_12\Irony.Samples.Console\obj\Debug\025.Irony.Samples.Console.2012.csprojResolveAssemblyReference.cache
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\Irony_2013_12_12\Irony.Samples.Console\obj\Debug\Irony.Samples.Console.exe
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\Irony_2013_12_12\Irony.Samples.Console\obj\Debug\Irony.Samples.Console.pdb

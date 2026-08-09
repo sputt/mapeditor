@@ -3,16 +3,22 @@ Imports System.Text.RegularExpressions
 Imports System.Threading.Tasks
 
 Partial Public Class Scenario
-    Private Async Function LoadImages(FileName As String) As Task
+    Public Async Function LoadImages(FileName As String) As Task
         Dim Path As String = Directory.GetParent(FileName).FullName
         Dim Stream = New StreamReader(FileName)
         Dim Matches = GraphicsRegex.Matches(Await Stream.ReadToEndAsync())
         Stream.Close()
 
         ' Empty first image
-        Dim Uri As New Uri("pack://application:,,,/WPFZ80MapEditor;component/question.bmp", UriKind.RelativeOrAbsolute)
-        Dim QuestionBitmap As New BitmapImage(Uri)
-        Images.Add(New ZeldaImage("", BitmapUtils.Mask(QuestionBitmap, Color.FromArgb(255, 168, 230, 29))))
+        Dim Uri As Uri
+        Dim QuestionBitmap As New BitmapImage()
+        Try
+            Uri = New Uri("pack://application:,,,/WPFZ80MapEditor;component/question.bmp", UriKind.RelativeOrAbsolute)
+            QuestionBitmap = New BitmapImage(Uri)
+            Images.Add(New ZeldaImage("", BitmapUtils.Mask(QuestionBitmap, Color.FromArgb(255, 168, 230, 29))))
+        Catch ex As Exception
+            Debug.WriteLine("No empty image to load: " + ex.ToString())
+        End Try
 
         Dim Index As Integer = 1
         For Each Match As Match In Matches

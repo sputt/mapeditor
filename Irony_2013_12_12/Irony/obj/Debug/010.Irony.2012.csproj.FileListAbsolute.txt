@@ -1,0 +1,7 @@
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\Irony_2013_12_12\Irony\bin\Debug\Irony.dll
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\Irony_2013_12_12\Irony\bin\Debug\Irony.pdb
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\Irony_2013_12_12\Irony\obj\Debug\010.Irony.2012.csprojResolveAssemblyReference.cache
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\Irony_2013_12_12\Irony\obj\Debug\Irony.Resources.resources
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\Irony_2013_12_12\Irony\obj\Debug\010.Irony.2012.csproj.GenerateResource.Cache
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\Irony_2013_12_12\Irony\obj\Debug\Irony.dll
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\Irony_2013_12_12\Irony\obj\Debug\Irony.pdb

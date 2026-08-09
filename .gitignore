@@ -5,9 +5,9 @@
 /.vs/WPFZ80MapEditor/v15
 /Script Compiler/x64/Debug
 /WPFZ80MapEditor/bin/x64/Debug
-/WPFZ80MapEditor/obj/x64/Debug
-/WPFZ80MapEditor/obj/x86/Debug
+/WPFZ80MapEditor/obj
 /WPFZ80MapEditorExe/bin/x64/Debug
+/WPFZ80MapEditorExe/bin/x64/Release
 /WPFZ80MapEditorExe/obj
 /WPFZ80MapEditorTest/obj/Debug
 /WPFZ80MapEditorTest/obj
@@ -18,3 +18,9 @@
 /VB Zelda Script Compiler/bin
 /VB Zelda Script Compiler/obj
 /WPFZ80MapEditorTest/bin/x64/Debug
+/WPFZ80MapEditor/obj/
+/WPFZ80MapEditor/bin/
+/.idea
+/.vs
+/packages
+/WPFZ80MapEditorTest/bin/

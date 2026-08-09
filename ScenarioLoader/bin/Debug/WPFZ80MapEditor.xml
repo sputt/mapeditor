@@ -1,0 +1,312 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+WPFZ80MapEditor
+</name>
+</assembly>
+<members>
+<member name="T:WPFZ80MapEditor.My.MyWpfExtension">
+ <summary>
+ Module used to define the properties that are available in the My Namespace for WPF
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="P:WPFZ80MapEditor.My.MyWpfExtension.Application">
+ <summary>
+ Returns the application object for the running application
+ </summary>
+</member>
+<member name="P:WPFZ80MapEditor.My.MyWpfExtension.Computer">
+ <summary>
+ Returns information about the host computer.
+ </summary>
+</member>
+<member name="P:WPFZ80MapEditor.My.MyWpfExtension.User">
+ <summary>
+ Returns information for the current user.  If you wish to run the application with the current 
+ Windows user credentials, call My.User.InitializeWithWindowsUser().
+ </summary>
+</member>
+<member name="P:WPFZ80MapEditor.My.MyWpfExtension.Log">
+ <summary>
+ Returns the application log. The listeners can be configured by the application's configuration file.
+ </summary>
+</member>
+<member name="P:WPFZ80MapEditor.My.MyWpfExtension.Windows">
+ <summary>
+ Returns the collection of Windows defined in the project.
+ </summary>
+</member>
+<member name="T:WPFZ80MapEditor.My.Resources.Resources">
+<summary>
+  A strongly-typed resource class, for looking up localized strings, etc.
+</summary>
+</member>
+<member name="P:WPFZ80MapEditor.My.Resources.Resources.ResourceManager">
+<summary>
+  Returns the cached ResourceManager instance used by this class.
+</summary>
+</member>
+<member name="P:WPFZ80MapEditor.My.Resources.Resources.Culture">
+<summary>
+  Overrides the current thread's CurrentUICulture property for all
+  resource lookups using this strongly typed resource class.
+</summary>
+</member>
+<member name="P:WPFZ80MapEditor.My.Resources.Resources.ApplicationName">
+<summary>
+  Looks up a localized string similar to Z80 Scenario Editor.
+</summary>
+</member>
+<member name="T:WPFZ80MapEditor.EditorWindow">
+<summary>
+EditorWindow
+</summary>
+</member>
+<member name="M:WPFZ80MapEditor.EditorWindow.InitializeComponent">
+<summary>
+InitializeComponent
+</summary>
+</member>
+<member name="T:WPFZ80MapEditor.SelectorWindow">
+<summary>
+SelectorWindow
+</summary>
+</member>
+<member name="M:WPFZ80MapEditor.SelectorWindow.InitializeComponent">
+<summary>
+InitializeComponent
+</summary>
+</member>
+<member name="T:WPFZ80MapEditor.TileSelector">
+<summary>
+TileSelector
+</summary>
+</member>
+<member name="M:WPFZ80MapEditor.TileSelector.InitializeComponent">
+<summary>
+InitializeComponent
+</summary>
+</member>
+<member name="T:WPFZ80MapEditor.MainWindow">
+<summary>
+MainWindow
+</summary>
+</member>
+<member name="M:WPFZ80MapEditor.MainWindow.InitializeComponent">
+<summary>
+InitializeComponent
+</summary>
+</member>
+<member name="T:WPFZ80MapEditor.MapEditorControl">
+<summary>
+MapEditorControl
+</summary>
+</member>
+<member name="M:WPFZ80MapEditor.MapEditorControl.InitializeComponent">
+<summary>
+InitializeComponent
+</summary>
+</member>
+<member name="T:WPFZ80MapEditor.MiscLayer">
+<summary>
+MiscLayer
+</summary>
+</member>
+<member name="M:WPFZ80MapEditor.MiscLayer.InitializeComponent">
+<summary>
+InitializeComponent
+</summary>
+</member>
+<member name="T:WPFZ80MapEditor.ScriptLayer">
+<summary>
+ScriptLayer
+</summary>
+</member>
+<member name="M:WPFZ80MapEditor.ScriptLayer.InitializeComponent">
+<summary>
+InitializeComponent
+</summary>
+</member>
+<member name="T:WPFZ80MapEditor.AnimatedTile">
+<summary>
+AnimatedTile
+</summary>
+</member>
+<member name="M:WPFZ80MapEditor.AnimatedTile.InitializeComponent">
+<summary>
+InitializeComponent
+</summary>
+</member>
+<member name="T:WPFZ80MapEditor.GameMapView">
+<summary>
+GameMapView
+</summary>
+</member>
+<member name="M:WPFZ80MapEditor.GameMapView.InitializeComponent">
+<summary>
+InitializeComponent
+</summary>
+</member>
+<member name="T:WPFZ80MapEditor.MapData">
+ <summary>
+ 
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="P:WPFZ80MapEditor.MapData.Index">
+ <summary>
+ Used during debugging
+ </summary>
+ <value></value>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="T:WPFZ80MapEditor.ObjectProperties">
+<summary>
+ObjectProperties
+</summary>
+</member>
+<member name="M:WPFZ80MapEditor.ObjectProperties.InitializeComponent">
+<summary>
+InitializeComponent
+</summary>
+</member>
+<member name="T:WPFZ80MapEditor.ObjectsPanel">
+<summary>
+ObjectsPanel
+</summary>
+</member>
+<member name="M:WPFZ80MapEditor.ObjectsPanel.InitializeComponent">
+<summary>
+InitializeComponent
+</summary>
+</member>
+<member name="T:WPFZ80MapEditor.TilesPanel">
+<summary>
+TilesPanel
+</summary>
+</member>
+<member name="M:WPFZ80MapEditor.TilesPanel.InitializeComponent">
+<summary>
+InitializeComponent
+</summary>
+</member>
+<member name="T:WPFZ80MapEditor.SimulationPanel">
+<summary>
+SimulationPanel
+</summary>
+</member>
+<member name="M:WPFZ80MapEditor.SimulationPanel.InitializeComponent">
+<summary>
+InitializeComponent
+</summary>
+</member>
+<member name="T:WPFZ80MapEditor.TestLayer">
+<summary>
+TestLayer
+</summary>
+</member>
+<member name="M:WPFZ80MapEditor.TestLayer.InitializeComponent">
+<summary>
+InitializeComponent
+</summary>
+</member>
+<member name="T:WPFZ80MapEditor.TilegroupLayer">
+<summary>
+TilegroupLayer
+</summary>
+</member>
+<member name="P:WPFZ80MapEditor.TilegroupLayer.Floating">
+ <summary>
+ Whether or not the selection is floating.  When floating, the delete key will simply remove the selection without applying.
+ When not floating, the delete key will fill the selection with the selected tile
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:WPFZ80MapEditor.TilegroupLayer.InitializeComponent">
+<summary>
+InitializeComponent
+</summary>
+</member>
+<member name="P:WPFZ80MapEditor.TilegroupEntry.Index">
+ <summary>
+ Index into the map data
+ </summary>
+</member>
+<member name="P:WPFZ80MapEditor.TilegroupEntry.Tile">
+ <summary>
+ Type of tile to place at the given index
+ </summary>
+</member>
+<member name="M:WPFZ80MapEditor.UndoManager.PushUndoState(WPFZ80MapEditor.MapData,WPFZ80MapEditor.UndoManager.TypeFlags)">
+ <summary>
+ Pushes a map save state to the undo stack
+ </summary>
+ <param name="MapToSave">Which map is going to be modified by the next operation</param>
+ <param name="TypesToSave">Which types in the map are going to be modified</param>
+ <remarks>Specifying types allows the UndoManager to selectively save parts of the map data</remarks>
+</member>
+<member name="T:WPFZ80MapEditor.XLayerContainer">
+<summary>
+XLayerContainer
+</summary>
+</member>
+<member name="M:WPFZ80MapEditor.XLayerContainer.InitializeComponent">
+<summary>
+InitializeComponent
+</summary>
+</member>
+<member name="T:WPFZ80MapEditor.XMapView">
+<summary>
+XMapView
+</summary>
+</member>
+<member name="M:WPFZ80MapEditor.XMapView.InitializeComponent">
+<summary>
+InitializeComponent
+</summary>
+</member>
+<member name="T:WPFZ80MapEditor.XXObjectLayer">
+<summary>
+XXObjectLayer
+</summary>
+</member>
+<member name="M:WPFZ80MapEditor.XXObjectLayer.InitializeComponent">
+<summary>
+InitializeComponent
+</summary>
+</member>
+<member name="T:WPFZ80MapEditor.XamlGeneratedNamespace.GeneratedInternalTypeHelper">
+<summary>
+GeneratedInternalTypeHelper
+</summary>
+</member>
+<member name="M:WPFZ80MapEditor.XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateInstance(System.Type,System.Globalization.CultureInfo)">
+<summary>
+CreateInstance
+</summary>
+</member>
+<member name="M:WPFZ80MapEditor.XamlGeneratedNamespace.GeneratedInternalTypeHelper.GetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Globalization.CultureInfo)">
+<summary>
+GetPropertyValue
+</summary>
+</member>
+<member name="M:WPFZ80MapEditor.XamlGeneratedNamespace.GeneratedInternalTypeHelper.SetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Object,System.Globalization.CultureInfo)">
+<summary>
+SetPropertyValue
+</summary>
+</member>
+<member name="M:WPFZ80MapEditor.XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateDelegate(System.Type,System.Object,System.String)">
+<summary>
+CreateDelegate
+</summary>
+</member>
+<member name="M:WPFZ80MapEditor.XamlGeneratedNamespace.GeneratedInternalTypeHelper.AddEventHandler(System.Reflection.EventInfo,System.Object,System.Delegate)">
+<summary>
+AddEventHandler
+</summary>
+</member>
+</members>
+</doc>

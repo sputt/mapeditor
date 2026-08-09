@@ -15,10 +15,10 @@ Public Class ZCRCompiler
     End Sub
 
     Public Shared Sub Main()
-        Dim Compiler As New ZCRCompiler("C:\Users\sputt_000\Projects\zelda")
-        Compiler.Compile("HILL_MAP_05_CLOSE_DOORS", "
-	delete object[2];
- ")
+        Dim Compiler As New ZCRCompiler("C:\Users\clzdg\Projects\zelda")
+        '       Compiler.Compile("HILL_MAP_05_CLOSE_DOORS", "
+        'delete object[2];
+        '")
     End Sub
 
     Private Function SelectKeyStatement(Node As ParseTreeNode) As ParseTreeNode

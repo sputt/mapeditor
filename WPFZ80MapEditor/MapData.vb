@@ -179,10 +179,11 @@ Public Class MapData
     End Sub
 
     Public Shared Function NonexistentMap(X As Integer, Y As Integer) As MapData
-        Dim MapData As New MapData(Nothing, Nothing)
-        MapData.Exists = False
-        MapData.X = X
-        MapData.Y = Y
+        Dim MapData As New MapData(Nothing, Nothing) With {
+            .Exists = False,
+            .X = X,
+            .Y = Y
+        }
         Return MapData
     End Function
 
@@ -208,20 +209,20 @@ Public Class MapData
     End Function
 
     Protected Overrides Function CreateInstanceCore() As Freezable
-        Dim Map As New MapData(Scenario, 0)
-        Map.Tileset = Tileset
-
-        Map.X = X
-        Map.Y = Y
-        Map.Exists = Exists
-        Map.TileData = New ObservableCollection(Of Byte)(TileData)
-        Map.ZAnims = CloneAll(ZAnims)
-        Map.ZObjects = CloneAll(ZObjects)
-        Map.ZEnemies = CloneAll(ZEnemies)
-        Map.ZMisc = CloneAll(ZMisc)
-        Map.ZScript = CloneAll(ZScript)
-        Map._ID = ID
-        Map.Index = Index
+        Dim Map As New MapData(Scenario, 0) With {
+            .Tileset = Tileset,
+            .X = X,
+            .Y = Y,
+            .Exists = Exists,
+            .TileData = New ObservableCollection(Of Byte)(TileData),
+            .ZAnims = CloneAll(ZAnims),
+            .ZObjects = CloneAll(ZObjects),
+            .ZEnemies = CloneAll(ZEnemies),
+            .ZMisc = CloneAll(ZMisc),
+            .ZScript = CloneAll(ZScript),
+            ._ID = ID,
+            .Index = Index
+        }
 
         Return Map
     End Function

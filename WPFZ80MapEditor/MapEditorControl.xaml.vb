@@ -50,7 +50,10 @@ Public Class MapEditorControl
 
     Public Async Sub OpenScenario(fileName As String)
         Dim scenario As New Scenario
-        Await scenario.LoadScenario(fileName)
+        SPASMHelper.Initialize(MapEditorControl.ZeldaFolder)
+
+        Await scenario.LoadImages(IO.Path.Combine(ZeldaFolder, "graphics.asm"))
+        Await scenario.LoadScenario(MapEditorControl.ZeldaFolder, fileName)
 
         Debug.Print("Done loading: " & (Now - DateTime.FromFileTime(StartTime)).TotalMilliseconds & " ms")
         AddHandler LayerContainer.LayoutUpdated, AddressOf LayoutChanged

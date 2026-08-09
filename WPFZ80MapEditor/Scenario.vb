@@ -4,6 +4,7 @@ Imports System.Text.RegularExpressions
 Imports System.Threading.Tasks
 Imports System.ComponentModel
 Imports ScriptCompiler
+Imports Common.Logging
 
 Public Class Scenario
     Implements INotifyPropertyChanged
@@ -86,6 +87,7 @@ Public Class Scenario
     Public Property Tilesets As New List(Of Tileset)
 
     Private _FileName As String
+    Private _ZeldaFolder As String
 
     Private Sub Log(LogStr As String)
         Debug.Write(Now.ToFileTime & ": " & LogStr & vbCrLf)
@@ -123,56 +125,35 @@ Public Class Scenario
         End If
     End Function
 
-    Public Async Function LoadScenario(FileName As String) As Task
+    Public Async Function LoadScenario(ZeldaFolder As String, FileName As String) As Task
         _IsLoading = True
+        _ZeldaFolder = ZeldaFolder
 
+        ScenarioName = Path.GetFileName(FileName).Replace(" ", "-")
+        Dim Logger = LogManager.GetLogger("Editor.Scenario")
+
+        Logger.Debug("Loading Tilesets")
         Tilesets = New List(Of Tileset)()
-        Tilesets.Add(New Tileset("dungeon", IO.Path.Combine(MapEditorControl.ZeldaFolder, "maps\dungeon.bmp")))
-        Tilesets.Add(New Tileset("town", IO.Path.Combine(MapEditorControl.ZeldaFolder, "maps\town.bmp")))
-        Tilesets.Add(New Tileset("graveyard", IO.Path.Combine(MapEditorControl.ZeldaFolder, "maps\graveyard.bmp")))
-        Tilesets.Add(New Tileset("cave", IO.Path.Combine(MapEditorControl.ZeldaFolder, "maps\cave.bmp")))
-        Tilesets.Add(New Tileset("indoors", IO.Path.Combine(MapEditorControl.ZeldaFolder, "maps\indoors.bmp")))
+        Tilesets.Add(New Tileset("dungeon", IO.Path.Combine(ZeldaFolder, "maps\dungeon.bmp")))
+        Tilesets.Add(New Tileset("town", IO.Path.Combine(ZeldaFolder, "maps\town.bmp")))
+        Tilesets.Add(New Tileset("graveyard", IO.Path.Combine(ZeldaFolder, "maps\graveyard.bmp")))
+        Tilesets.Add(New Tileset("cave", IO.Path.Combine(ZeldaFolder, "maps\cave.bmp")))
+        Tilesets.Add(New Tileset("indoors", IO.Path.Combine(ZeldaFolder, "maps\indoors.bmp")))
 
-        Log("Starting SPASM")
-        SPASMHelper.Initialize(MapEditorControl.ZeldaFolder)
+        Logger.Debug("Loading all defs")
+        Dim TempScriptDefs As Dictionary(Of String, ZDef) = LoadBuiltins(ZeldaFolder)
 
-        Log("Loading images")
-        Await LoadImages(MapEditorControl.ZeldaFolder & "\graphics.asm")
-
+        Logger.Debug("Loading this scenario now")
         _FileName = FileName
         SPASMHelper.Defines.Add("INCLUDE_ALL", 1)
 
-        Log("Assembling map")
-        Dim Data = SPASMHelper.AssembleFile(FileName)
+        Logger.Debug("Assembling map")
+        Dim Data = SPASMHelper.AssembleFile(Path.Combine(ZeldaFolder, FileName))
 
-        Log("Loading all defs")
 
-        Dim Test As New DefParams()
 
-        Dim TempScriptDefs As New Dictionary(Of String, ZDef)
-
-        Dim DefList = {New DefParams("animatedef.inc", AnimDefs, GetType(ZAnim)),
-                    New DefParams("objectdef.inc", ObjectDefs, GetType(ZObject)),
-                    New DefParams("miscdef.inc", MiscDefs, GetType(ZMisc)),
-                    New DefParams("enemydef.inc", EnemyDefs, GetType(ZEnemy)),
-                    New DefParams("scriptdef.inc", TempScriptDefs, GetType(ZScript))}
-
-        'ScriptDef = DirectCast(TempScriptDefs("Script"), ZScript)
-        Log("Loading Scripts")
-        Dim ScriptsFolder = Path.Combine(MapEditorControl.ZeldaFolder, "scripts")
-        For Each File In Directory.EnumerateFiles(ScriptsFolder)
-            If Path.GetExtension(File) = ".zcr" Then
-                'BuiltinScripts(Path.GetFileNameWithoutExtension(File).Replace("-", "_").Replace(" ", "_")) = File
-            End If
-        Next
-
-        Parallel.ForEach(DefList, Sub(Item)
-                                      LoadDefs(MapEditorControl.ZeldaFolder & "\" & Item.FileName, Item.Collection, Item.Type)
-                                  End Sub)
-
-        Me.ScriptDef = TempScriptDefs("SCRIPT")
-
-        Dim Reader As New StreamReader(FileName)
+        Logger.Debug("Reading scenario")
+        Dim Reader As New StreamReader(Path.Combine(ZeldaFolder, FileName))
         Dim ScenarioContents As String = Await Reader.ReadToEndAsync()
         ScenarioContents = ScenarioContents.Replace(vbCrLf, vbLf)
         Reader.Close()
@@ -182,136 +163,153 @@ Public Class Scenario
         Dim CurShiftX = 0, CurShiftY = 0
 
         For Each Label In SPASMHelper.Labels.Keys
+            Debug.WriteLine(Label)
             If Label Like "*_MAP_##" Then
-                Dim x = SPASMHelper.Labels(Label & "_X")
-                MaxX = Math.Max(x, MaxX)
-                Dim y = SPASMHelper.Labels(Label & "_Y")
-                MaxY = Math.Max(y, MaxY)
-                Dim Tileset = SPASMHelper.Labels(Label & "_TILESET")
-                Dim IsCompressed = Not SPASMHelper.Labels.ContainsKey(Label & "_RAW")
-
-                Dim RawMapData = Data.Skip(SPASMHelper.Labels(Label))
-
-                Dim MapData = New MapData(RawMapData, Me, Tileset, IsCompressed)
-                MapData.MapPrefix = Label & "_"
-
-                Dim MapMacrosStart = ScenarioContents.IndexOf(Label & ":")
-                Dim EndSectionString = "END_SECTION()"
-                Dim MapMacrosEnd = Math.Max(ScenarioContents.IndexOf(EndSectionString, MapMacrosStart) + EndSectionString.Length, MapMacrosStart)
-
-                Dim MapContents = ScenarioContents.Substring(MapMacrosStart, MapMacrosEnd - MapMacrosStart)
-
-                Dim ScriptSectionString = "#ifdef INCLUDE_SCRIPTS"
-                Dim MapScriptsStart = ScenarioContents.IndexOf(ScriptSectionString, MapMacrosEnd) + ScriptSectionString.Length + 1
-                Dim MapScriptsEnd = ScenarioContents.IndexOf("#endif", MapScriptsStart)
-                Dim ScriptContents = ""
-                If MapScriptsEnd - MapScriptsStart > 0 Then
-                    ScriptContents = ScenarioContents.Substring(MapScriptsStart, MapScriptsEnd - MapScriptsStart)
-                End If
-
-                Log("Loading map " & x & "," & y)
-
-                Log("Running regular expression...")
-                Dim Matches = MapDataRegex.Matches(MapContents)
-                Log("Done")
-
-                Dim RawScenarioData = Data.Skip(SPASMHelper.Labels(Label & "_DEFAULTS"))
-                Dim RawData As New MemoryStream(RawScenarioData.ToArray())
-
-                If Matches.Count = 1 Then
-                    Dim Groups = Matches(0).Groups
-
-                    RawData.ReadByte() : RawData.ReadByte()
-                    For i = 0 To Groups("AnimName").Captures.Count - 1
-                        Dim Params = Split(Groups("AnimArgs").Captures(i).Value, ",")
-                        Dim Anim As New ZAnim(AnimDefs(Groups("AnimName").Captures(i).Value), Params(0), Params(1), RawData)
-                        MapData.ZAnims.Add(Anim)
-                    Next
-
-                    Dim offset = 0
-                    RawData.ReadByte() : RawData.ReadByte()
-                    For i = 0 To Groups("ObjectName").Captures.Count - 1
-                        Dim ObjectPropName = Groups("ObjectPropName").Captures(i + offset).Value
-                        Dim ObjectPropValue = Groups("ObjectPropValue").Captures(i + offset).Value
-                        If Not String.IsNullOrEmpty(ObjectPropName) Then
-                            offset += 1
-                        End If
-                        Dim Params = Split(Groups("ObjectArgs").Captures(i).Value, ",")
-                        Dim Obj As New ZObject(ObjectDefs(Groups("ObjectName").Captures(i).Value), RawData, Params)
-                        LoadProps(Obj, ObjectPropName, ObjectPropValue)
-                        MapData.ZObjects.Add(Obj)
-                    Next
-
-                    offset = 0
-                    RawData.ReadByte() : RawData.ReadByte()
-                    For i = 0 To Groups("EnemyName").Captures.Count - 1
-                        Dim EnemyPropName = Groups("EnemyPropName").Captures(i + offset).Value
-                        Dim EnemyPropValue = Groups("EnemyPropValue").Captures(i + offset).Value
-                        If Not String.IsNullOrEmpty(EnemyPropName) Then
-                            offset += 1
-                        End If
-                        Dim Params = Split(Groups("EnemyArgs").Captures(i).Value, ",")
-                        Dim Enemy As New ZEnemy(EnemyDefs(Groups("EnemyName").Captures(i).Value), RawData, Params)
-                        LoadProps(Enemy, EnemyPropName, EnemyPropValue)
-                        MapData.ZEnemies.Add(Enemy)
-                    Next
-
-                    offset = 0
-                    RawData.ReadByte() : RawData.ReadByte()
-                    For i = 0 To Groups("MiscName").Captures.Count - 1
-                        Dim MiscPropName = Groups("MiscPropName").Captures(i + offset).Value
-                        Dim MiscPropValue = Groups("MiscPropValue").Captures(i + offset).Value
-                        If Not String.IsNullOrEmpty(MiscPropName) Then
-                            offset += 1
-                        End If
-                        Dim Params = Split(Groups("MiscArgs").Captures(i).Value, ",")
-                        Dim Misc As New ZMisc(MiscDefs(Groups("MiscName").Captures(i).Value), RawData, Params)
-                        LoadProps(Misc, MiscPropName, MiscPropValue)
-                        MapData.ZMisc.Add(Misc)
-                    Next
-
-                    offset = 0
-                    RawData.ReadByte() : RawData.ReadByte()
-                    For i = 0 To Groups("ScriptName").Captures.Count - 1
-                        Dim ScriptPropName = Groups("ScriptPropName").Captures(i + offset).Value
-                        Dim ScriptPropValue = Groups("ScriptPropValue").Captures(i + offset).Value
-                        If Not String.IsNullOrEmpty(ScriptPropName) Then
-                            offset += 1
-                        End If
-                        Dim Params = Split(Groups("ScriptArgs").Captures(i).Value, ",")
-                        Dim Scr As New ZScript(TempScriptDefs(Groups("ScriptName").Captures(i).Value), RawData, Params)
-                        LoadProps(Scr, ScriptPropName, ScriptPropValue)
-
-                        Scr.ScriptContents = ExtractScriptsContents(ScriptContents, Scr.Args(1).Value)
-                        MapData.ZScript.Add(Scr)
-                    Next
-                    Log("Done")
-                End If
-
-                Log("Creating map...")
-                MapData.X = x + CurShiftX
-                MapData.Y = y + CurShiftY
-                Dim OldX = MapData.X, OldY = MapData.Y
-                AddMap(MapData)
-                CurShiftX += MapData.X - OldX
-                CurShiftY += MapData.Y - OldY
-                Log("Done")
-                ScenarioName = Left(Label, Len(Label) - 7)
+                Logger.DebugFormat("Current data offset {0}", SPASMHelper.Labels(Label))
+                LoadMap(Data, TempScriptDefs, ScenarioContents, MaxX, MaxY, CurShiftX, CurShiftY, Label, Logger)
             End If
         Next
 
-        'For x = 0 To MaxX
-        '    For y = 0 To MaxY
-        '        Dim CurX = x, CurY = y
-        '        Dim Exist = (From m In MainWindow.Instance.LayerContainer.Children Where Grid.GetColumn(m) = CurX And Grid.GetRow(m) = CurY).Count() > 0
-        '        If Not Exist Then
-        '            AddMap(x, y, Nothing)
-        '        End If
-        '    Next
-        'Next
-
         _IsLoading = False
     End Function
+
+    Private Function LoadBuiltins(ZeldaFolder As String) As Dictionary(Of String, ZDef)
+        Dim TempScriptDefs As New Dictionary(Of String, ZDef)
+        Dim DefList = {New DefParams("animatedef.inc", AnimDefs, GetType(ZAnim)),
+                    New DefParams("objectdef.inc", ObjectDefs, GetType(ZObject)),
+                    New DefParams("miscdef.inc", MiscDefs, GetType(ZMisc)),
+                    New DefParams("enemydef.inc", EnemyDefs, GetType(ZEnemy)),
+                    New DefParams("scriptdef.inc", TempScriptDefs, GetType(ZScript))}
+
+        Parallel.ForEach(DefList, Sub(Item)
+                                      LoadDefs(Path.Combine(ZeldaFolder, Item.FileName), Item.Collection, Item.Type)
+                                  End Sub)
+        Me.ScriptDef = TempScriptDefs("SCRIPT")
+        Return TempScriptDefs
+    End Function
+
+    Private Sub LoadMap(Data() As Byte, TempScriptDefs As Dictionary(Of String, ZDef), ScenarioContents As String,
+                        ByRef MaxX As Integer, ByRef MaxY As Integer,
+                        ByRef CurShiftX As Integer,
+                        ByRef CurShiftY As Integer, Label As String, ParentLogger As ILog)
+        Dim x = SPASMHelper.Labels(Label & "_X")
+        MaxX = Math.Max(x, MaxX)
+        Dim y = SPASMHelper.Labels(Label & "_Y")
+        MaxY = Math.Max(y, MaxY)
+
+        Dim Logger = LogManager.GetLogger(ParentLogger.ToString() & "." & Label)
+
+        Dim Tileset = SPASMHelper.Labels(Label & "_TILESET")
+        Dim IsCompressed = Not SPASMHelper.Labels.ContainsKey(Label & "_RAW")
+
+        Dim RawMapData = Data.Skip(SPASMHelper.Labels(Label))
+
+        Dim MapData = New MapData(RawMapData, Me, Tileset, IsCompressed)
+        MapData.MapPrefix = Label & "_"
+
+        Dim MapMacrosStart = ScenarioContents.IndexOf(Label & ":")
+        Dim EndSectionString = "END_SECTION()"
+        Dim MapMacrosEnd = Math.Max(ScenarioContents.IndexOf(EndSectionString, MapMacrosStart) + EndSectionString.Length, MapMacrosStart)
+
+        Dim MapContents = ScenarioContents.Substring(MapMacrosStart, MapMacrosEnd - MapMacrosStart)
+
+        Dim ScriptSectionString = "#ifdef INCLUDE_SCRIPTS"
+        Dim MapScriptsStart = ScenarioContents.IndexOf(ScriptSectionString, MapMacrosEnd) + ScriptSectionString.Length + 1
+        Dim MapScriptsEnd = ScenarioContents.IndexOf("#endif", MapScriptsStart)
+        Dim ScriptContents = ""
+        If MapScriptsEnd - MapScriptsStart > 0 Then
+            ScriptContents = ScenarioContents.Substring(MapScriptsStart, MapScriptsEnd - MapScriptsStart)
+        End If
+
+        Log("Loading map " & x & "," & y)
+
+        Logger.Debug("Running regular expression...")
+        Dim Matches = MapDataRegex.Matches(MapContents)
+        Logger.Debug("Done")
+
+        Dim RawScenarioData = Data.Skip(SPASMHelper.Labels(Label & "_DEFAULTS"))
+        Dim RawData As New MemoryStream(RawScenarioData.ToArray())
+
+        If Matches.Count = 1 Then
+            Dim Groups = Matches(0).Groups
+
+            RawData.ReadByte() : RawData.ReadByte()
+            For i = 0 To Groups("AnimName").Captures.Count - 1
+                Dim Params = Split(Groups("AnimArgs").Captures(i).Value, ",")
+                Dim Anim As New ZAnim(AnimDefs(Groups("AnimName").Captures(i).Value), Params(0), Params(1), RawData)
+                MapData.ZAnims.Add(Anim)
+            Next
+
+            Dim offset = 0
+            RawData.ReadByte() : RawData.ReadByte()
+            For i = 0 To Groups("ObjectName").Captures.Count - 1
+                Dim ObjectPropName = Groups("ObjectPropName").Captures(i + offset).Value
+                Dim ObjectPropValue = Groups("ObjectPropValue").Captures(i + offset).Value
+                If Not String.IsNullOrEmpty(ObjectPropName) Then
+                    offset += 1
+                End If
+                Dim Params = Split(Groups("ObjectArgs").Captures(i).Value, ",")
+                Dim Obj As New ZObject(ObjectDefs(Groups("ObjectName").Captures(i).Value), RawData, Params)
+                LoadProps(Obj, ObjectPropName, ObjectPropValue)
+                MapData.ZObjects.Add(Obj)
+            Next
+
+            offset = 0
+            RawData.ReadByte() : RawData.ReadByte()
+            For i = 0 To Groups("EnemyName").Captures.Count - 1
+                Dim EnemyPropName = Groups("EnemyPropName").Captures(i + offset).Value
+                Dim EnemyPropValue = Groups("EnemyPropValue").Captures(i + offset).Value
+                If Not String.IsNullOrEmpty(EnemyPropName) Then
+                    offset += 1
+                End If
+                Dim Params = Split(Groups("EnemyArgs").Captures(i).Value, ",")
+                Dim Enemy As New ZEnemy(EnemyDefs(Groups("EnemyName").Captures(i).Value), RawData, Params)
+                LoadProps(Enemy, EnemyPropName, EnemyPropValue)
+                MapData.ZEnemies.Add(Enemy)
+            Next
+
+            offset = 0
+            RawData.ReadByte() : RawData.ReadByte()
+            For i = 0 To Groups("MiscName").Captures.Count - 1
+                Dim MiscPropName = Groups("MiscPropName").Captures(i + offset).Value
+                Dim MiscPropValue = Groups("MiscPropValue").Captures(i + offset).Value
+                If Not String.IsNullOrEmpty(MiscPropName) Then
+                    offset += 1
+                End If
+                Dim Params = Split(Groups("MiscArgs").Captures(i).Value, ",")
+                Dim Misc As New ZMisc(MiscDefs(Groups("MiscName").Captures(i).Value), RawData, Params)
+                LoadProps(Misc, MiscPropName, MiscPropValue)
+                MapData.ZMisc.Add(Misc)
+            Next
+
+            offset = 0
+            RawData.ReadByte() : RawData.ReadByte()
+            For i = 0 To Groups("ScriptName").Captures.Count - 1
+                Dim ScriptPropName = Groups("ScriptPropName").Captures(i + offset).Value
+                Dim ScriptPropValue = Groups("ScriptPropValue").Captures(i + offset).Value
+                If Not String.IsNullOrEmpty(ScriptPropName) Then
+                    offset += 1
+                End If
+                Dim Params = Split(Groups("ScriptArgs").Captures(i).Value, ",")
+                Dim Scr As New ZScript(TempScriptDefs(Groups("ScriptName").Captures(i).Value), RawData, Params)
+                LoadProps(Scr, ScriptPropName, ScriptPropValue)
+
+                Scr.ScriptContents = ExtractScriptsContents(ScriptContents, Scr.Args(1).Value)
+                MapData.ZScript.Add(Scr)
+            Next
+            Log("Done")
+        End If
+
+        Log("Creating map...")
+        MapData.X = x + CurShiftX
+        MapData.Y = y + CurShiftY
+        Dim OldX = MapData.X, OldY = MapData.Y
+        AddMap(MapData)
+        CurShiftX += MapData.X - OldX
+        CurShiftY += MapData.Y - OldY
+        Log("Done")
+        ScenarioName = Left(Label, Len(Label) - 7)
+    End Sub
 
     Private Function AddMap(MapCollection As Collection(Of MapData), Map As MapData) As MapData
         Dim OriginalMap As MapData = MapCollection.ToList().Find(Function(m) m.X = Map.X And m.Y = Map.Y)
@@ -452,7 +450,7 @@ Public Class Scenario
         Dim MapsTable As String = ""
         Dim TilesetTable As New List(Of String)
 
-        Dim Compiler As New ZCRCompiler(MapEditorControl.ZeldaFolder)
+        Dim Compiler As New ZCRCompiler(_ZeldaFolder)
 
         Dim MapIndex As Integer = 0
         For Each MapData In Maps.ToList().Where(Function(m) m.Exists).OrderBy(Function(m) m.Y).ThenBy(Function(m) m.X)

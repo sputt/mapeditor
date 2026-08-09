@@ -25,7 +25,7 @@ Public Class MainWindow
         ObjectsPanel.DragScope = MapControl
 
         If MapEditorControl.ZeldaFolder IsNot Nothing Then
-            Dim fileName = Path.Combine(MapEditorControl.ZeldaFolder, "maps\pete.zmap")
+            Dim fileName = Path.Combine(MapEditorControl.ZeldaFolder, "maps\hill.zmap")
             MapControl.OpenScenario(fileName)
         End If
 
@@ -124,7 +124,7 @@ Public Class MainWindow
             Model.DeselectAll()
 
             Dim Scenario As New Scenario
-            Await Scenario.LoadScenario(dlg.FileName)
+            Await Scenario.LoadScenario(MapEditorControl.ZeldaFolder, dlg.FileName)
             Model.Scenario = Scenario
         End If
         e.Handled = True

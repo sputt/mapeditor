@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:WPFZ80MapEditor"
     xmlns:converters="clr-namespace:WPFZ80MapEditor.ValueConverters"
-    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions" x:Class="MainWindow"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors" x:Class="MainWindow"
     x:Name="MainWindow"
     Width="1280" Height="720" ResizeMode="CanResizeWithGrip" MinHeight="150" MinWidth="200" Background="White">
     
@@ -135,15 +135,15 @@
         <Grid>
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="Click" SourceName="TestButton">
-                    <ei:GoToStateAction StateName="Testing"/>
-                    <ei:CallMethodAction MethodName="StartTesting" TargetObject="{Binding ., ElementName=MainWindow}"/>
+                    <i:GoToStateAction StateName="Testing"/>
+                    <i:CallMethodAction MethodName="StartTesting" TargetObject="{Binding ., ElementName=MainWindow}"/>
                 </i:EventTrigger>
                 <i:EventTrigger EventName="Click" SourceName="StopButton">
-                	<ei:GoToStateAction StateName="Editing"/>
-                    <ei:CallMethodAction MethodName="StopTesting" TargetObject="{Binding ., ElementName=MainWindow}"/>
+                	<i:GoToStateAction StateName="Editing"/>
+                    <i:CallMethodAction MethodName="StopTesting" TargetObject="{Binding ., ElementName=MainWindow}"/>
                 </i:EventTrigger>
                 <i:EventTrigger>
-                	<ei:GoToStateAction StateName="Editing"/>
+                	<i:GoToStateAction StateName="Editing"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
             <local:MapEditorControl x:Name="MapControl" />

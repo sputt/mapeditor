@@ -1,0 +1,29 @@
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\obj\x64\Release\ScenarioLoader.Resources.resources
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\obj\x64\Release\ScenarioLoader.vbproj.GenerateResource.cache
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\obj\x64\Release\ScenarioLoader.vbproj.CoreCompileInputs.cache
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\bin\x64\Release\Editor\ZScript.xshd
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\bin\x64\Release\ScenarioLoader.exe.config
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\bin\x64\Release\ScenarioLoader.exe
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\bin\x64\Release\ScenarioLoader.pdb
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\bin\x64\Release\ScenarioLoader.xml
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\bin\x64\Release\Common.Logging.Core.dll
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\bin\x64\Release\Common.Logging.dll
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\bin\x64\Release\WPFZ80MapEditor.dll
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\bin\x64\Release\Revsoft.TextEditor.dll
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\bin\x64\Release\VB Zelda Script Compiler.dll
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\bin\x64\Release\Irony.dll
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\bin\x64\Release\WPFZ80MapEditor.pdb
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\bin\x64\Release\WPFZ80MapEditor.xml
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\bin\x64\Release\Common.Logging.pdb
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\bin\x64\Release\Common.Logging.xml
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\bin\x64\Release\Common.Logging.Core.pdb
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\bin\x64\Release\Common.Logging.Core.xml
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\bin\x64\Release\Revsoft.TextEditor.pdb
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\bin\x64\Release\VB Zelda Script Compiler.pdb
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\bin\x64\Release\VB Zelda Script Compiler.xml
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\bin\x64\Release\Irony.pdb
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\obj\x64\Release\ScenarioLoader.vbprojAssemblyReference.cache
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\obj\x64\Release\ScenarioLoader.vbproj.CopyComplete
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\obj\x64\Release\ScenarioLoader.exe
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\obj\x64\Release\ScenarioLoader.xml
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\obj\x64\Release\ScenarioLoader.pdb

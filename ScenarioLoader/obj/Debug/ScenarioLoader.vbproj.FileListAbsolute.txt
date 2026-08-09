@@ -1,0 +1,22 @@
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\obj\Debug\ScenarioLoader.vbprojAssemblyReference.cache
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\obj\Debug\ScenarioLoader.Resources.resources
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\obj\Debug\ScenarioLoader.vbproj.GenerateResource.cache
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\obj\Debug\ScenarioLoader.vbproj.CoreCompileInputs.cache
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\bin\Debug\Editor\ZScript.xshd
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\bin\Debug\ScenarioLoader.exe.config
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\bin\Debug\ScenarioLoader.exe
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\bin\Debug\ScenarioLoader.pdb
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\bin\Debug\ScenarioLoader.xml
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\bin\Debug\WPFZ80MapEditor.dll
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\bin\Debug\Revsoft.TextEditor.dll
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\bin\Debug\VB Zelda Script Compiler.dll
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\bin\Debug\Irony.dll
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\bin\Debug\WPFZ80MapEditor.pdb
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\bin\Debug\WPFZ80MapEditor.xml
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\bin\Debug\VB Zelda Script Compiler.pdb
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\bin\Debug\VB Zelda Script Compiler.xml
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\bin\Debug\Irony.pdb
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\obj\Debug\ScenarioLoader.vbproj.CopyComplete
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\obj\Debug\ScenarioLoader.exe
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\obj\Debug\ScenarioLoader.xml
+C:\Users\sputt_000\Projects\WPZZ80Mapeditor\ScenarioLoader\obj\Debug\ScenarioLoader.pdb
