@@ -165,7 +165,7 @@
     </Reference>
     <Reference Include="Revsoft.TextEditor, Version=3.0.0.9999, Culture=neutral, PublicKeyToken=4d61825e8dd49f1a, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Documents\Projects\Wabbitcode\Wabbitcode\bin\X64\Release\Revsoft.TextEditor.dll</HintPath>
+      <HintPath>..\lib\Revsoft.TextEditor.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
