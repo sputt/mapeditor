@@ -179,7 +179,7 @@ void read_commands(std::string filename) {
 	i = 0;
 	while (fgets(buffer, sizeof(buffer), scriptfile)) {
 
-		if (buffer[0] == ';')
+		if (buffer[0] == ';' || strstr(buffer, "#define script_pcall"))
 			break;
 
 		if (isspace(buffer[0])) {
@@ -192,7 +192,9 @@ void read_commands(std::string filename) {
 				const char *last_comma = strrchr(buffer, ',');
 				if (last_comma == NULL) {
 					const char *last_space = strrchr(buffer, ' ');
-					strcpy(commands[i], last_space + 1);
+					if (last_space == NULL)
+					continue;
+				strcpy(commands[i], last_space + 1);
 				}
 				else {
 					strcpy(commands[i], last_comma + 2);
