@@ -12,6 +12,9 @@ Zelda repository directory to load the maps, images, and definitions.
 - The SPASM and Wabbitemu toolchain branches built and COM-registered first.
 - A sibling or otherwise accessible Zelda checkout.
 
+The solution's legacy NuGet assemblies are versioned in `packages`, so the
+documented build does not depend on downloading packages from the network.
+
 Clone the toolchain into sibling directories, because
 `WPFZ80MapEditor.sln` references `..\spasm` and `..\wabbitemu`:
 
