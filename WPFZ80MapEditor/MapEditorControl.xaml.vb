@@ -7,6 +7,7 @@ Imports WPFZ80MapEditor.ValueConverters
 Public Class MapEditorControl
     Public Shared Property StartTime As Long
     Public Shared Property ZeldaFolder As String
+    Public Shared Property StartupMap As String
     Public Shared Property RomPath As String
 
     Private _Model As New AppModel

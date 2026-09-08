@@ -25,7 +25,8 @@ Public Class MainWindow
         ObjectsPanel.DragScope = MapControl
 
         If MapEditorControl.ZeldaFolder IsNot Nothing Then
-            Dim fileName = Path.Combine(MapEditorControl.ZeldaFolder, "maps\hill.zmap")
+            Dim mapPath = If(String.IsNullOrEmpty(MapEditorControl.StartupMap), "maps\hill.zmap", MapEditorControl.StartupMap)
+            Dim fileName = If(Path.IsPathRooted(mapPath), mapPath, Path.Combine(MapEditorControl.ZeldaFolder, mapPath))
             MapControl.OpenScenario(fileName)
         End If
 
@@ -157,12 +158,17 @@ Public Class MainWindow
 
     Private _OldLayer As LayerType
     Public Sub StartTesting()
-        Model.Scenario.SaveScenario()
+        Try
+            Model.Scenario.SaveScenario()
 
-        Model.GameModel = New GameModel(Model.Scenario)
+            Model.GameModel = New GameModel(Model.Scenario)
 
-        _OldLayer = Model.CurrentLayer
-        Model.CurrentLayer = LayerType.TestingLayer
+            _OldLayer = Model.CurrentLayer
+            Model.CurrentLayer = LayerType.TestingLayer
+        Catch ex As Exception
+            MessageBox.Show("Test failed: " & ex.Message & Environment.NewLine & Environment.NewLine & ex.ToString(),
+                            "Z80 Scenario Editor", MessageBoxButton.OK, MessageBoxImage.Error)
+        End Try
     End Sub
 
     Public Sub StopTesting()

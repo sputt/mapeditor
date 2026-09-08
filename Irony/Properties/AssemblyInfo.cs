@@ -38,8 +38,9 @@ using System.Security;
 [assembly: AssemblyCulture("")]
 [assembly: CLSCompliant(true)]
 
-//Make the code security-transparent. more info here: http://msdn.microsoft.com/en-us/library/bb397858.aspx
-[assembly: SecurityTransparent()]
+// SecurityTransparent was for Silverlight / CAS. On desktop .NET 4.7 it makes
+// Roslyn-generated parser IL fail JIT verification (VerificationException in
+// ParsingContext.ComputeStackRangeSpan), which crashed Test in the map editor.
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 

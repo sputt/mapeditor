@@ -434,7 +434,10 @@ Public Class Scenario
     End Sub
 
     Public Sub SaveScenario(fileName As String)
-        Dim Stream = New StreamWriter(fileName)
+        Dim tempFile = fileName & ".saving"
+        Dim Stream As StreamWriter = Nothing
+        Try
+        Stream = New StreamWriter(tempFile)
 
         Stream.WriteLine("#ifdef INCLUDE_ALL")
         Stream.WriteLine("#define INCLUDE_MAPS")
@@ -570,6 +573,18 @@ Public Class Scenario
         Stream.WriteLine("#endif")
 
         Stream.Close()
+        Stream = Nothing
+        File.Copy(tempFile, fileName, True)
+        File.Delete(tempFile)
+        Catch
+            If Stream IsNot Nothing Then
+                Stream.Close()
+            End If
+            If File.Exists(tempFile) Then
+                File.Delete(tempFile)
+            End If
+            Throw
+        End Try
     End Sub
 
     Private Sub RaisePropertyChanged(PropName As String)

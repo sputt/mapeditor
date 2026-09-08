@@ -8,8 +8,11 @@ Class Application
 
     Private Sub Application_Startup(sender As Object, e As StartupEventArgs)
         System.Windows.Forms.Application.EnableVisualStyles()
-        If e.Args.Length = 1 Then
+        If e.Args.Length >= 1 Then
             MapEditorControl.ZeldaFolder = e.Args(0)
+        End If
+        If e.Args.Length >= 2 Then
+            MapEditorControl.StartupMap = e.Args(1)
         End If
         MapEditorControl.StartTime = Now.ToFileTime
     End Sub

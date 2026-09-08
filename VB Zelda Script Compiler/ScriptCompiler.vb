@@ -1,6 +1,7 @@
 ﻿Imports Demo
 Imports Irony.Parsing
 Imports SPASM
+Imports System.Linq
 
 Public Class ZCRCompiler
     Private _ZeldaPath As String
@@ -31,6 +32,12 @@ Public Class ZCRCompiler
     Public Function Compile(Name As String, ScriptContents As String) As String
         Dim Parser = New Parser(New ZcrGrammar)
         Dim ParseTree = Parser.Parse(ScriptContents)
+        If ParseTree Is Nothing OrElse ParseTree.Root Is Nothing Then
+            Dim errors = If(ParseTree IsNot Nothing AndAlso ParseTree.ParserMessages IsNot Nothing,
+                            String.Join(vbCrLf, ParseTree.ParserMessages.Select(Function(m) m.ToString())),
+                            "unknown parse error")
+            Throw New InvalidOperationException("Failed to parse script '" & Name & "': " & errors)
+        End If
 
         Dim Statements = (From Node In ParseTree.Root.ChildNodes(0).ChildNodes
                           Select SelectKeyStatement(Node)).ToList()
