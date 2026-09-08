@@ -13,8 +13,9 @@ Zelda repository directory to load the maps, images, and definitions.
 - A sibling or otherwise accessible Zelda checkout.
 
 The solution's legacy NuGet assemblies are versioned in `packages`, and its
-legacy text-editor dependency is versioned in `lib`, so the documented build
-does not depend on downloading packages from the network or on a personal path.
+legacy text-editor/interactivity dependencies are versioned in `lib`, so the
+documented build does not depend on downloading packages from the network or
+on a personal path.
 
 Clone the toolchain into sibling directories, because
 `WPFZ80MapEditor.sln` references `..\spasm` and `..\wabbitemu`:
